@@ -1,0 +1,61 @@
+/* Localized, additive clear effects. Intentionally NO fullscreen mask/veil. */
+.board .fx-layer{
+  position:absolute;inset:0;z-index:5;pointer-events:none;
+  overflow:visible;contain:layout style;
+}
+.board .fx-layer .fx-tile{
+  position:absolute!important;display:grid;place-items:center;
+  z-index:1;pointer-events:none!important;
+  transform:translate3d(0,0,0);will-change:transform,opacity;
+  box-sizing:border-box;transition:none!important;animation:none!important;
+}
+.board .fx-layer .fx-shard{
+  display:block;position:absolute;width:7%;height:7%;min-width:2px;
+  max-width:7px;min-height:2px;max-height:7px;border-radius:35%;
+  box-shadow:0 0 6px currentColor;will-change:transform,opacity;
+  pointer-events:none;
+}
+.board-wrap .float-score{
+  width:max-content;white-space:nowrap;pointer-events:none;
+  font-size:clamp(17px,3.6vw,32px);font-weight:900;
+  color:#fff4bd;text-shadow:0 2px 4px #08102a,0 0 9px #8dcaf188;
+}
+body.mode-play .board-wrap .float-score{font-size:clamp(17px,5cqw,36px)}
+body.mode-play .fx-shard{opacity:.9}
+@media (prefers-reduced-motion:reduce){
+ .board .fx-layer .fx-shard{display:none}
+ .board .fx-layer .fx-tile{will-change:auto}
+}
+
+.board .fx-layer .fx-point{
+  position:absolute;z-index:8;pointer-events:none;
+  font:900 clamp(10px,1.7vw,18px) "Trebuchet MS","PingFang SC",sans-serif;
+  white-space:nowrap;color:#ffedb0;
+  text-shadow:0 1px 2px #0c1538,0 0 4px #e9c058;
+  will-change:transform,opacity;
+}
+body.mode-play .board .fx-layer .fx-point{font-size:clamp(10px,2.65cqw,18px)}
+@media(prefers-reduced-motion:reduce){.board .fx-layer .fx-point{display:none}}
+
+/* Original-design victory/failure info; used only when a stage has ended. */
+.game-overlay .result-stats{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  min-width:55%;padding:11px 22px;
+  border:1px solid #c8dcff35;border-radius:15px;
+  background:linear-gradient(125deg,#294479a9,#2136609e);
+  color:#e9f5ff;font-size:clamp(12px,2.2vw,22px);
+  text-shadow:0 1px 3px #061027aa
+}
+.result-stats strong{font-size:1.4em;color:#ffe48d;text-shadow:0 0 10px #dfaf4b66}
+.result-stats .perfect-flash{font-size:1.1em;letter-spacing:.13em;color:#fff2b5;
+  animation:perfect-lustre 1.4s ease-in-out infinite alternate}
+@keyframes perfect-lustre{from{filter:brightness(.94);transform:scale(.97)}to{filter:brightness(1.3);transform:scale(1.08)}}
+@media(prefers-reduced-motion:reduce){.result-stats .perfect-flash{animation:none}}
+
+/* 5s inactivity hint: local border-only pulse, never a board mask. */
+#board > .cell.hint{z-index:2;outline:2px solid #ffe9a3;outline-offset:-2px;
+  animation:hint-ring 1.6s ease-in-out infinite;
+  box-shadow:inset 0 0 7px #fff4a83a,0 0 6px #ffe29a9e}
+@keyframes hint-ring{0%,100%{filter:brightness(1)}
+  50%{filter:brightness(1.19)}}
+@media(prefers-reduced-motion:reduce){#board > .cell.hint{animation:none}}

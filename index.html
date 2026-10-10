@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#171839">
+  <meta name="description" content="经典点消 Clean-room 可视化工作台，支持确定性棋盘、交互与原版差异验证">
+  <title>经典点消 H5 复刻实验室 · 非原 APK</title>
+  <link rel="stylesheet" href="./src/style.css">
+  <link rel="stylesheet" href="./src/immersive.css">
+  <link rel="stylesheet" href="./src/effects.css">
+  <link rel="stylesheet" href="./src/activity.css">
+  <script type="module" src="./src/ui.mjs"></script>
+</head>
+<body>
+  <div class="ambient ambient-left"></div><div class="ambient ambient-right"></div>
+  <main class="shell">
+    <header class="top">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <div><div class="brand-title">H5 复刻实验室 <span class="version">开发验证版 · 非原 APK</span></div>
+          <div class="brand-sub">原创 H5 实验版 <span class="dot">·</span> CLEAN ROOM</div>
+        </div>
+      </div>
+      <div class="top-actions"><button id="switch-play" type="button" class="source-link" data-testid="switch-play">▶ 全屏游戏界面</button><a class="source-link" href="https://github.com/pkinfran/popstar-recreation" target="_blank" rel="noopener">项目仓库 ↗</a></div>
+    </header>
+    <section class="intro">
+      <div><div class="eyebrow">VISUAL VALIDATION / BUILD 01</div>
+      <h1>让每一颗星星，<em>都有迹可循。</em></h1>
+      <p>此处运行的是自主开发的 H5 复刻实验版，并非原 APK。按实机资料逐步验证棋盘、动画与状态机。</p></div>
+      <div class="intro-status"><span class="pulse"></span><span>H5 实验版运行中</span><small>非原 APK · 部分功能待实现</small></div>
+    </section>
+    <nav class="module-nav" id="module-nav" aria-label="模块切换">
+      <button class="module is-active" data-module="board" type="button">01 棋盘</button>
+      <button class="module" data-module="touch" type="button">02 消除</button>
+      <button class="module" data-module="motion" type="button">03 动画</button>
+      <button class="module" data-module="hud" type="button">04 HUD</button>
+      <button class="module" data-module="props" type="button">05 道具</button>
+      <button class="module" data-module="stage" type="button">06 关卡</button>
+      <button class="module" data-module="revive" type="button">07 复活</button>
+      <button class="module" data-module="conditional" type="button">08 活动</button>
+      <button class="module" data-module="integration" type="button">09 集成</button>
+    </nav>
+    <div class="workspace">
+      <section class="game-pane" aria-label="可交互棋盘">
+        <div class="scene-header" aria-label="游戏控制">
+          <button class="scene-nav-button scene-back" id="scene-back" aria-label="暂停和游戏菜单" type="button">‹</button>
+          <div class="scene-title" aria-hidden="true">星夜消消<span>独立原创 H5</span></div>
+          <button class="scene-nav-button scene-lab" id="switch-lab" type="button" data-testid="switch-lab" aria-label="切换实验室工作台">⚙</button>
+        </div>
+        <div class="scene-note" aria-hidden="true">玩法研究复刻 · 非原 APK</div>
+        <div class="scene-menu" id="scene-menu" hidden role="dialog" aria-modal="true" aria-label="游戏菜单">
+          <div class="scene-menu-content">
+            <div class="menu-starlight" aria-hidden="true">✦</div>
+            <h2>星夜消消</h2>
+            <p>原创 H5 玩法复刻实验版</p>
+            <button type="button" id="scene-resume" class="menu-main">继续游戏</button>
+            <button type="button" id="scene-reset">重新开局</button>
+            <button type="button" id="scene-home">返回游戏大厅</button>
+            <button type="button" id="scene-open-lab">切换实验室</button>
+            <button type="button" id="scene-toggle-audio">关闭音效</button>
+            <button type="button" id="scene-toggle-music">开启背景旋律</button>
+            <button type="button" id="scene-toggle-tap">切换：双击确认</button>
+            <button type="button" id="scene-help">玩法与规则说明</button>
+            <div id="scene-help-panel" class="scene-help-panel" hidden>相同颜色至少两颗四向相连才可点消。每组 n 颗得 5×n² 分；消得越干净，残局奖励越高。目标分跨关累计。道具库存为本 H5 实验值，不关联原 APK 的付费系统。</div>
+            <p class="menu-save-note" id="menu-save-status">仅在此浏览器本地自动存档 · 无账号上传</p>
+          </div>
+        </div>
+        <div class="scene-hall" id="scene-hall" role="dialog" aria-modal="true" aria-label="独立游戏大厅" hidden>
+          <div class="scene-hall-content">
+            <div class="scene-hall-icon" aria-hidden="true">✦</div>
+            <h2>星夜消消</h2>
+            <p class="scene-hall-sub">原创经典点消 · 非官方 APK</p>
+            <div class="scene-hall-record">
+              <div>当前进度 <b id="hall-stage">第 1 关</b></div>
+              <div>当前积分 <b id="hall-score">0</b></div>
+              <div>本机最佳 <b id="hall-best">0</b></div>
+            </div>
+            <button id="hall-continue" class="menu-main" type="button">继续游戏</button>
+            <button id="hall-new" type="button">重新开始</button>
+            <button id="hall-help" type="button" aria-expanded="false">玩法说明</button>
+            <p id="hall-help-text" hidden>四方向相连的同色星星至少两颗即可消除。一次 n 颗奖励 5×n² 分，残局越少奖励越高。游戏只在本机存档，不支持官方 APK 的付费或账号服务。</p>
+            <p class="scene-hall-notice">独立制作的 H5 游戏，非原 APK，未使用原游戏美术或音乐</p>
+          </div>
+        </div>
+        <div class="game-topbar"><span class="game-label">CLASSIC PLAYFIELD</span>
+        <span class="chip" id="phase-chip">READY · 可操作</span></div>
+        <div class="score-display">
+          <div><span class="metric-name">关卡</span><strong id="stage-number" data-testid="stage">01</strong></div>
+          <div class="score-main"><span class="metric-name">当前累计得分</span><strong id="score-number" data-testid="score">0</strong></div>
+          <div><span class="metric-name">本关目标</span><strong id="target-number" data-testid="target">1,000</strong></div>
+        </div>
+        <div class="progress-track" aria-label="目标进度"><div id="progress-fill"></div></div>
+        <div class="board-wrap">
+          <div class="board-decor decor-a">✦</div><div class="board-decor decor-b">✧</div>
+          <div id="board" class="board" role="grid" aria-label="10 行 10 列星星棋盘" data-testid="board"></div>
+          <div id="float-score" class="float-score" aria-live="polite"></div>
+          <div id="cheer" class="cheer" hidden aria-live="polite"></div>
+          <div id="stage-entry" class="stage-entry" hidden aria-live="polite">
+            <b id="stage-entry-title">第 1 关</b>
+            <span id="stage-entry-target">目标 1,000 分</span>
+          </div>
+          <div id="activity-layer" class="activity-layer" hidden aria-label="条件活动效果调试">
+            <button type="button" id="parachute-prop" aria-label="调试领取降落伞奖励（不实际发奖）">
+              <svg viewBox="0 0 100 118" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M8 42Q50-29 92 42Q70 27 50 42Q28 27 8 42Z" fill="#e5f6fd" stroke="#447fa4" stroke-width="3"/>
+                <path d="M8 42Q28 27 50 42Q52-7 50 10Q21 7 8 42Z" fill="#ffcb7b"/>
+                <path d="M50 42Q70 27 92 42Q78 6 50 10Z" fill="#84dcce"/>
+                <path d="M9 42L35 90M91 42L64 90M50 42L50 90" stroke="#b4dcf0" stroke-width="2.2"/>
+                <rect x="32" y="85" width="36" height="26" rx="7" fill="#e7bc6b" stroke="#945f36" stroke-width="3"/>
+                <path d="M49 85v26M32 97h36" stroke="#fff1c2" stroke-width="3"/>
+              </svg>
+            </button>
+          </div>
+          <div id="overlay" class="game-overlay" hidden></div>
+        </div>
+        <div class="game-bottom">
+          <span id="board-status">100 / 100 格</span>
+          <span id="move-status">等待操作</span>
+          <span id="group-status">合法连块 —</span>
+        </div>
+        <div class="props-row" aria-label="道具">
+          <button type="button" data-tool="crayon" title="选择星星，再选颜色"><span class="tool-emoji" aria-hidden="true">◈</span><svg class="tool-icon" aria-hidden="true" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="rotate(-25 32 32)"><rect x="22" y="9" width="20" height="40" rx="6" fill="#fae8ef" stroke="#79336b" stroke-width="3"/><rect x="22" y="17" width="20" height="16" fill="#f4657e"/><path d="M22 25h20" stroke="#ffd0d9" stroke-width="2"/><path d="M25 49h14l-7 10z" fill="#eeb77c" stroke="#8f405c" stroke-width="2"/><path d="M30 55h4l-2 5z" fill="#633d58"/><path d="M26 12h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g></svg><b>蜡笔</b><small id="crayon-count">×2</small></button>
+          <button type="button" data-tool="refresh" title="将现存星星重新排列"><span class="tool-emoji" aria-hidden="true">⟳</span><svg class="tool-icon" aria-hidden="true" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M50 30a19 19 0 0 0-31-11" stroke="#8bff6d" stroke-width="7" stroke-linecap="round"/><path d="M16 12l-2 17 17-3" fill="#8bff6d" stroke="#358944" stroke-width="2" stroke-linejoin="round"/><path d="M14 34a19 19 0 0 0 32 11" stroke="#ffe172" stroke-width="7" stroke-linecap="round"/><path d="M48 52l2-17-17 3" fill="#ffe172" stroke="#966431" stroke-width="2" stroke-linejoin="round"/></svg><b>刷新</b><small id="refresh-count">×2</small></button>
+          <button type="button" data-tool="hammer" title="点击后选择一颗星星"><span class="tool-emoji" aria-hidden="true">⌁</span><svg class="tool-icon" aria-hidden="true" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="rotate(-25 32 32)"><rect x="29" y="26" width="8" height="32" rx="4" fill="#ddaa5f" stroke="#95652f" stroke-width="2"/><rect x="13" y="13" width="39" height="18" rx="7" fill="#b8d6e8" stroke="#3e6e90" stroke-width="3"/><rect x="11" y="16" width="10" height="12" rx="5" fill="#e7f6ff" stroke="#6c95ae" stroke-width="2"/><path d="M24 17h20" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".8"/></g><path d="M48 43l3-5m0 12l5-1" stroke="#ffd66a" stroke-width="3" stroke-linecap="round"/></svg><b>锤子</b><small id="hammer-count">×2</small></button>
+        </div>
+        <div class="game-message" id="game-message" role="status" aria-live="polite">选择两个或更多相连的同色星星，开始消除。</div>
+      </section>
+      <aside class="inspector" aria-label="验证工作台设置">
+        <div class="inspector-head"><span class="small-caps">CONTROL ROOM</span><span class="inspector-index" id="module-index">M01</span>
+          <h2 id="inspector-title">棋盘生成验证</h2>
+          <p id="inspector-description">可输入种子重复相同初盘，并观察连块结构和所选难度档。</p></div>
+        <section class="panel">
+          <div class="panel-title"><span>场景控制</span><small>DETERMINISTIC</small></div>
+          <label class="field-label" for="tier-override">棋盘库结构档（模拟验证）</label>
+          <select id="tier-override" data-testid="tier-override">
+            <option value="">自动：由关卡和超分权重选择</option>
+            <option value="A">A · 容易</option>
+            <option value="B">B · 常见基础</option>
+            <option value="C">C · 普通</option>
+            <option value="D">D · 中等</option>
+            <option value="E">E · 偏难</option>
+            <option value="F">F · 难</option>
+            <option value="G">G · 特殊结构</option>
+            <option value="H">H · 高难碎片</option>
+            <option value="I">I · 特殊极易结构</option>
+          </select>
+          <span class="form-hint">档位结构统计参考原版全库，但这里生成的是原创盘，不包含任何原版棋盘记录。</span>
+          <label for="seed-input" class="field-label">随机种子 / Seed</label>
+          <div class="seed-row"><input id="seed-input" type="number" inputmode="numeric" value="20261008" min="1" step="1"><button id="reset-btn" class="primary-btn" type="button">生成棋盘 ↻</button></div>
+          <label class="field-label" for="audio-enabled"><input type="checkbox" id="audio-enabled" checked> 消除音效（默认开启 · 原创合成）</label>
+          <label class="field-label" for="music-enabled"><input type="checkbox" id="music-enabled"> 背景旋律（选开 · H5 独立创作，非原版）</label>
+          <span class="form-hint">原 APK 现行 Classic 研究未发现循环背景曲主路径，因此旋律默认关闭。手机首次触摸后才允许 WebAudio 发声。</span>
+          <label class="field-label" for="layout-mode">视图 / 几何对照</label>
+          <select id="layout-mode" data-testid="layout-mode">
+            <option value="lab">实验室视图 · 优先验证交互</option>
+            <option value="original">APK 几何参考 · 非原版界面</option>
+          </select>
+          <span class="form-hint">仅参考原 APK 实测的 720×1080 画布、棋盘与 HUD 位置。这里的美术、动效、音频、菜单并非原 APK。</span>
+          <label class="field-label" for="tap-mode">触控模式</label>
+          <select id="tap-mode"><option value="single">单击消除</option><option value="double">首次选择 / 二次确认</option></select>
+          <button id="debug-end-btn" class="quiet-btn" type="button">调试：直接进入结算</button>
+          <button id="debug-pass-btn" class="quiet-btn" type="button">调试：达标并预览下关入场</button>
+          <button id="debug-parachute-btn" class="quiet-btn" type="button">调试 M08：条件降落伞动画（不发奖）</button>
+          <span class="form-hint">调试操作仅验证界面与状态，不代表原版跳过棋盘的功能。</span>
+        </section>
+        <section class="panel">
+          <div class="panel-title"><span>实时棋盘统计</span><small>LIVE</small></div>
+          <div class="stat-list">
+            <div><span>棋盘规格</span><b>10 × 10</b></div>
+            <div><span>剩余棋子</span><b id="stat-remaining">100</b></div>
+            <div><span>合法连块</span><b id="stat-groups">—</b></div>
+            <div><span>最大连块</span><b id="stat-largest">—</b></div>
+            <div><span>合成难度档</span><b id="stat-tier">—</b></div>
+            <div><span>近八盘去重 · 原创</span><b id="stat-history" data-testid="recent-board-history">1 / 1</b></div>
+            <div><span>初盘可全消证明</span><b id="stat-solvable" data-testid="solvable-opening">原版分布拟合</b></div>
+            <div><span>最大优先策略得分 · 模拟</span><b id="stat-rollout-score" data-testid="difficulty-rollout-score">—</b></div>
+            <div><span>原 APK 同档模拟均分</span><b id="stat-original-score">—</b></div>
+            <div><span>最大优先策略残局 · 模拟</span><b id="stat-rollout-remain">—</b></div>
+            <div><span>原 APK 同档平均残局</span><b id="stat-original-remain">—</b></div>
+            <div><span>模型状态</span><b id="stat-state">ready</b></div>
+          </div>
+        </section>
+        <section class="panel evidence-panel">
+          <div class="panel-title"><span>复刻精度说明</span><small>NOT THE ORIGINAL APK</small></div>
+          <div class="evidence-row"><span class="evidence-mark confirmed"></span><div><b>已核实的玩法规则</b><p>10×10、五色、四向相连、5n² 得分和残局奖励。</p></div></div>
+          <div class="evidence-row"><span class="evidence-mark provisional"></span><div><b>原创合成棋盘（非 APK BoardLib）</b><p>权重档位有源码依据；当前使用原创合成盘，不含原版 BoardLib 记录。</p></div></div>
+          <div class="evidence-row"><span class="evidence-mark pending"></span><div><b>尚未达到原 APK 一致性</b><p>动画曲线、道具边界、部分复活弹层与活动表现。</p></div></div>
+        </section>
+        <section class="panel">
+          <div class="panel-title"><span>本地事件记录</span><small id="event-count">0 EVENTS</small></div>
+          <ol id="event-log" class="event-log"><li>等待玩家操作……</li></ol>
+          <button type="button" id="copy-log-btn" class="quiet-btn">复制 JSON 事件记录</button>
+        </section>
+      </aside>
+    </div>
+    <footer class="page-footer"><span>当前为独立 H5 复刻实验版，而非原 APK；不包含原 APK 美术或音频。</span><span id="build-status">模块通过自动化测试后方可标记验收。</span></footer>
+  </main>
+</body>
+</html>

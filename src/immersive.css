@@ -1,0 +1,315 @@
+/* Fully original hand-built visual art, with proportional layout informed by
+   measured current Android Classic geometry. This is NOT the APK art. */
+body.mode-play{background:#080d20;overflow-x:hidden}
+body.mode-play .ambient,
+body.mode-play .top,
+body.mode-play .intro,
+body.mode-play .module-nav,
+body.mode-play .inspector,
+body.mode-play .page-footer{display:none}
+body.mode-play .shell{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100dvh;max-width:none;margin:0;padding:0;
+}
+body.mode-play .workspace{display:block;width:100%;min-width:0}
+body.mode-play .game-pane.play-scene{
+  position:relative;margin:auto;
+  width:min(100vw,56.25dvh,720px);max-width:720px;
+  height:auto;aspect-ratio:720/1280;
+  border:0;border-radius:0;padding:0;overflow:hidden;
+  container-type:inline-size;
+  background:#102145 url('../assets/aster-night.svg') center / 100% 100% no-repeat;
+  box-shadow:0 14px 90px #000a;isolation:isolate;
+}
+body.mode-play .game-pane.play-scene:after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 100% 40% at 48% 40%,#7a9bc80d,transparent),
+    linear-gradient(0deg,#04071842,transparent 14%,transparent 92%,#090e2955);
+}
+.game-pane .scene-header,.game-pane .scene-note{display:none}
+body.mode-play .scene-header{
+  position:absolute;inset:0 0 auto 0;z-index:9;height:12%;display:block;
+  pointer-events:none
+}
+body.mode-play .scene-nav-button{
+  position:absolute;top:17%;pointer-events:auto;
+  width:8.8%;aspect-ratio:1;padding:0;
+  border:2px solid #a5b7ca99;border-radius:50%;
+  color:#eff9ff;font-size:clamp(22px,5cqw,39px);
+  text-shadow:0 1px 4px #000a;
+  background:radial-gradient(circle at 32% 24%,#446a88,#1b3155 62%,#10192d);
+  box-shadow:inset 0 2px 4px #def8ff55,inset 0 -4px 7px #040d23ac,0 2px 7px #020818c0
+}
+body.mode-play .scene-back{left:4%}
+body.mode-play .scene-lab{right:4%;font-size:clamp(17px,3.5cqw,28px)}
+body.mode-play .scene-title{
+  position:absolute;top:28%;left:21%;width:58%;text-align:center;
+  color:#b7dafa;font-size:clamp(12px,2.8cqw,19px);
+  letter-spacing:.32em;font-weight:900;
+  text-shadow:0 2px 9px #020b28,0 0 10px #5c88c777
+}
+body.mode-play .scene-title span{display:block;letter-spacing:.25em;font-weight:500;font-size:.52em;opacity:.65;margin-top:2px}
+body.mode-play .scene-note{
+  position:absolute;z-index:4;bottom:1.3%;left:0;right:0;
+  display:block;text-align:center;font-size:clamp(8px,1.85cqw,13px);
+  letter-spacing:.16em;color:#a3c3e2a0;pointer-events:none
+}
+body.mode-play .game-topbar{display:none}
+body.mode-play .score-display{
+  position:absolute;z-index:2;top:13.2%;left:20%;width:60%;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  gap:1.1cqw;margin:0;padding:1.2cqw 0;
+  border-radius:40%/24%;background:linear-gradient(#060f2a00,#07153460,#07143245,#08133200)
+}
+body.mode-play .score-display>div{
+  display:flex;flex-direction:row;align-items:baseline;justify-content:center;
+  gap:1.3cqw;margin:0;white-space:nowrap;text-align:center
+}
+body.mode-play .score-display .metric-name{
+  font-weight:800;line-height:1.13;letter-spacing:.06em;
+  font-size:clamp(14px,3.9cqw,28px);color:#d6f4ff;
+  text-shadow:0 1px 4px #021022,0 0 8px #143866
+}
+body.mode-play .score-display strong,
+body.mode-play .score-display .score-main strong{
+  font-size:clamp(14px,3.9cqw,28px);font-weight:900;
+  line-height:1.18;letter-spacing:.02em;color:#e8f6ff;
+  text-shadow:0 2px 2px #08182c,0 0 8px #2b4f89
+}
+body.mode-play .score-display .score-main strong{color:#ffe27a}
+body.mode-play .score-display .score-main .metric-name{color:#fff0ae}
+body.mode-play .progress-track{display:none}
+body.mode-play .board-wrap{
+  position:absolute;z-index:2;left:2.77778%;top:32.8125%;
+  width:94.44444%;max-width:none;aspect-ratio:1;
+  margin:0;padding:0;overflow:visible;
+  border:0;border-radius:0;background:none;box-shadow:none;
+}
+body.mode-play .board{position:relative;left:2.5%;width:95%;height:auto;
+  display:grid;grid-template-columns:repeat(10,minmax(0,1fr));
+  gap:0;aspect-ratio:1;user-select:none}
+body.mode-play .board-decor{display:none}
+body.mode-play .cell{
+  --tile-deep:#07345f;--tile-shine:#b2e3ff;--tile-fill:#3384c5;--tile-star:#6db6ec;
+  position:relative;margin:1px;width:calc(100% - 2px);height:calc(100% - 2px);
+  display:grid;place-items:center;padding:0;border:1px solid #ffffff25;border-radius:16%;
+  overflow:visible;isolation:isolate;
+  background:linear-gradient(138deg,var(--tile-shine) 0%,var(--tile-fill) 22%,var(--tile-deep) 91%);
+  box-shadow:inset 0 2px 1px #fff4,inset 2px 2px 2px #fff2,
+    inset -3px -4px 4px #0006,0 1px 1px #000e;
+  transition:filter .12s,transform .15s;touch-action:manipulation
+}
+body.mode-play .cell:before{
+  content:"";position:absolute;inset:4%;border:1px solid #ffffff2c;border-radius:15%;
+  background:linear-gradient(148deg,#fff3,transparent 40%,#02061a28 85%);
+  pointer-events:none;z-index:-1
+}
+body.mode-play .cell:after{
+  content:"";position:absolute;left:11%;right:14%;top:5%;height:24%;
+  border-radius:100% 100% 35% 35%;background:linear-gradient(#fff8,#fff0);
+  opacity:.5;pointer-events:none
+}
+body.mode-play .cell[data-color=red]{--tile-deep:#8d1541;--tile-fill:#e43b70;--tile-shine:#ff879b;--tile-star:#ff607b}
+body.mode-play .cell[data-color=green]{--tile-deep:#007659;--tile-fill:#31bc85;--tile-shine:#a0e7a3;--tile-star:#6ae3a0}
+body.mode-play .cell[data-color=blue]{--tile-deep:#11518d;--tile-fill:#2692d8;--tile-shine:#83d8ff;--tile-star:#5bb6ed}
+body.mode-play .cell[data-color=orange]{--tile-deep:#af651a;--tile-fill:#f6a83a;--tile-shine:#ffe59a;--tile-star:#ffd064}
+body.mode-play .cell[data-color=violet]{--tile-deep:#572c9b;--tile-fill:#9650d5;--tile-shine:#e3b4ff;--tile-star:#b783ec}
+body.mode-play .cell.empty{border:0;background:transparent;box-shadow:none;pointer-events:none}
+body.mode-play .cell.empty:before,body.mode-play .cell.empty:after{display:none}
+.cell .star-emblem{display:none}
+body.mode-play .cell .legacy-star{display:none}
+body.mode-play .cell .star-emblem{
+  display:block;position:relative;width:87%;height:87%;
+  margin:0;padding:0;transform:none;border:0;
+  background:linear-gradient(145deg,#150a2870,var(--tile-deep) 90%);
+  clip-path:polygon(50% 2%,63% 32%,96% 36%,72% 60%,79% 94%,50% 78%,20% 95%,27% 60%,3% 36%,37% 32%);
+  filter:drop-shadow(0px 2px 1px #000a)
+}
+body.mode-play .cell .star-emblem-inner{
+  position:absolute;inset:7% 8% 10%;
+  display:block;width:auto;height:auto;
+  background:linear-gradient(154deg,var(--tile-shine) 0%,var(--tile-star) 35%,var(--tile-fill) 78%,var(--tile-deep));
+  clip-path:inherit;filter:drop-shadow(0 1px 2px #fff2)
+}
+body.mode-play .cell.selected{outline:3px solid #ffe5aa;outline-offset:-2px;filter:brightness(1.18)}
+body.mode-play .cell:hover:not(:disabled){transform:scale(1.035);filter:brightness(1.08)}
+
+body.mode-play .props-row{
+  position:absolute;z-index:5;left:59.6%;top:25.9%;height:5.3%;width:37%;
+  display:flex;align-items:center;justify-content:space-between;gap:2.3%;margin:0;padding:0
+}
+body.mode-play .props-row>button{
+  flex:1 1 0;position:relative;width:30%;height:auto;aspect-ratio:1;
+  min-width:0;min-height:0;display:grid;place-items:center;padding:0;
+  border:2px solid #8bdfff;border-radius:50%;
+  background:radial-gradient(circle at 36% 23%,#a7eaff,#509bd5 28%,#24619d 62%,#1b3566 94%);
+  box-shadow:inset 0 2px 3px #f4ffff7a,inset 0 -5px 5px #08294c,0 2px 4px #010824b3;
+}
+body.mode-play .props-row>button:after{
+  content:"+";position:absolute;right:-8%;bottom:-9%;
+  display:grid;place-items:center;width:37%;height:37%;
+  border-radius:50%;font-size:clamp(10px,2.1cqw,17px);font-weight:1000;
+  background:linear-gradient(145deg,#94f7af,#269b4c);border:1px solid #d4ffd7;
+  color:#f6fffa;text-shadow:0 1px 2px #125b21;box-shadow:0 1px 5px #00231d
+}
+body.mode-play .props-row>button.active{outline:3px solid #ffe79e;outline-offset:2px}
+body.mode-play .props-row .tool-emoji{
+  font-size:clamp(20px,4.5cqw,36px);font-weight:900;line-height:1.1;
+  color:#f3efff;text-shadow:0 2px 4px #0d174b,0 0 6px #edf9ff88
+}
+body.mode-play .props-row [data-tool=crayon] .tool-emoji{transform:rotate(-35deg);color:#f6d5ef}
+body.mode-play .props-row [data-tool=refresh] .tool-emoji{color:#bdf3ff}
+body.mode-play .props-row [data-tool=hammer] .tool-emoji{color:#fff4bb}
+body.mode-play .props-row b{display:none}
+body.mode-play .props-row small{
+  position:absolute;left:0;bottom:-11%;font-size:clamp(8px,1.55cqw,12px);
+  font-weight:800;color:#f7ffff;text-shadow:0 1px 3px #041322;
+}
+body.mode-play .game-bottom,body.mode-play .game-message{display:none}
+body.mode-play .float-score{font-size:clamp(23px,7cqw,48px)}
+body.mode-play .cheer{font-size:clamp(23px,8cqw,60px)}
+body.mode-play .game-overlay{inset:-9% -3% -4%;border:1px solid #ffffff38;
+  background:radial-gradient(ellipse at center,#293965ee,#101b3bea 72%);
+  border-radius:9%;box-shadow:0 9px 20px #0009}
+body.mode-play .game-overlay h3{font-size:clamp(21px,5.8cqw,42px)}
+body.mode-play .game-overlay p{font-size:clamp(11px,2.7cqw,19px)}
+body.mode-play .game-overlay .overlay-actions button{font-size:clamp(11px,2.5cqw,18px)}
+.scene-menu[hidden]{display:none}
+.scene-menu{
+  display:none;position:absolute;inset:0;z-index:21;
+  background:#06112bdc;backdrop-filter:blur(9px);align-items:center;
+  justify-content:center;text-align:center;padding:7%;
+}
+body.mode-play .scene-menu:not([hidden]){display:flex}
+.scene-menu-content{
+  width:84%;border:2px solid #8bb9e58a;border-radius:8%/5%;padding:9% 7%;
+  color:#f1f9ff;background:linear-gradient(158deg,#344b82f5,#101f46f7);
+  box-shadow:0 12px 34px #010619a9,inset 0 2px 5px #b6d7ff55
+}
+.scene-menu-content h2{font-size:clamp(26px,7cqw,53px);margin:2% 0}
+.scene-menu-content p{font-size:clamp(12px,3cqw,22px);color:#b8d5eb;margin:0 0 10%}
+.menu-starlight{font-size:clamp(34px,8cqw,65px);color:#ffe49c}
+.scene-menu-content button{
+  display:block;width:100%;margin:4% 0;padding:3% 5%;border:1px solid #a0c5e5;
+  border-radius:999px;background:#263e6d;color:#f6f9ff;
+  font-size:clamp(13px,3cqw,23px);font-weight:800
+}
+.scene-menu-content button.menu-main{
+  border:1px solid #fff1b4;background:linear-gradient(#ffe7a2,#dcac4a);color:#573b15
+}
+body.mode-lab .scene-menu,body.mode-lab .scene-header,body.mode-lab .scene-note{display:none}
+.top-actions{display:flex;align-items:center;gap:10px}
+.top-actions button.source-link{background:#4b4295;color:#fff;border-color:#6a63ad;font-weight:800}
+@media(max-width:760px){
+  .top-actions{gap:5px}
+  .top-actions .source-link{font-size:10px}
+}
+
+
+
+/* 2026-10-09 fidelity pass after actual 720x1280 reference vs Chromium:
+   Original vertical HUD centers are approximately y90/130/162, back y110,
+   board y420, tool centers y350. Preserve unique H5 branding and art. */
+body.mode-play .scene-nav-button{top:53%}
+body.mode-play .score-display{
+  top:5.45%;min-height:9.6%;width:61%;left:19.5%;gap:.28cqw;
+  padding:0 0 1.3cqw;background:none;
+}
+body.mode-play .score-display:before{
+  content:"";position:absolute;z-index:-1;
+  width:78%;left:11%;height:66%;bottom:0;
+  border-radius:100px;background:linear-gradient(100deg,#324b8380,#27375d9b,#324b8373);
+  border:1px solid #93b2cf08;
+}
+body.mode-play .score-display>div:first-child{order:1}
+body.mode-play .score-display>div:last-child{order:2}
+body.mode-play .score-display>.score-main{order:3}
+body.mode-play .score-display .metric-name,
+body.mode-play .score-display strong,
+body.mode-play .score-display .score-main strong{
+  font-size:clamp(14px,3.9cqw,28px);
+  line-height:1.23;font-weight:900;letter-spacing:.015em;
+  font-family:"Trebuchet MS","STKaiti","KaiTi","PingFang SC","Microsoft YaHei",sans-serif
+}
+body.mode-play .score-display>div:first-child .metric-name,
+body.mode-play .score-display>div:first-child strong{color:#86eaff}
+body.mode-play .score-display>div:last-child .metric-name,
+body.mode-play .score-display>div:last-child strong{color:#f8f8ff}
+body.mode-play .score-display .score-main .metric-name,
+body.mode-play .score-display .score-main strong{color:#ffe132}
+body.mode-play .cell[data-color=red]{--tile-deep:#ac2447;--tile-fill:#f85b7c;--tile-shine:#ffa7b3;--tile-star:#ff8395}
+body.mode-play .cell[data-color=green]{--tile-deep:#008f23;--tile-fill:#36cf3c;--tile-shine:#9aff80;--tile-star:#79f574}
+body.mode-play .cell[data-color=blue]{--tile-deep:#167bb7;--tile-fill:#30b6f3;--tile-shine:#a9ebff;--tile-star:#7edaff}
+body.mode-play .cell[data-color=orange]{--tile-deep:#ba7011;--tile-fill:#ffae24;--tile-shine:#ffe79b;--tile-star:#ffcf6b}
+body.mode-play .cell[data-color=violet]{--tile-deep:#7828b8;--tile-fill:#ac56f4;--tile-shine:#e4aeff;--tile-star:#ce91ff}
+body.mode-play .cell .star-emblem{
+  background:linear-gradient(155deg,var(--tile-fill) 0%,var(--tile-deep) 80%);
+}
+body.mode-play .cell .star-emblem-inner{
+  inset:7% 7% 9%;
+  background:linear-gradient(140deg,var(--tile-shine) 0%,var(--tile-star) 53%,var(--tile-fill) 100%);
+}
+
+.tool-icon{display:none}
+body.mode-play .props-row .tool-emoji{display:none}
+body.mode-play .props-row .tool-icon{
+  display:block;width:78%;height:78%;overflow:visible;
+  filter:drop-shadow(0 2px 2px #081436a6);
+  position:relative;z-index:1;pointer-events:none
+}
+body.mode-play .props-row [data-tool=crayon] .tool-icon{transform:rotate(2deg)}
+body.mode-play .props-row [data-tool=hammer] .tool-icon{transform:rotate(5deg)}
+
+/* Reference screenshot visual QA: no invented header may overlap the
+   original-measured Stage/Target/Current lines at y90/130/162. */
+body.mode-play .scene-title{display:none}
+body.mode-play .scene-back{left:1.25%}
+
+.scene-help-panel[hidden]{display:none}
+.scene-help-panel{font-size:clamp(11px,2.55cqw,18px);line-height:1.55;
+  text-align:left;color:#ebf4ff;background:#101f42bf;
+  border:1px solid #9bc8ec56;border-radius:10px;padding:12px}
+
+/* Independent game hall; explicit navigation only, never used as a clear mask. */
+.scene-hall[hidden]{display:none}
+body.mode-play .scene-hall{
+  position:absolute;inset:0;z-index:24;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse 85% 62% at 50% 48%,#263f72f0,#0d1d45f5 74%),
+    url('../assets/aster-night.svg') center/cover;
+  color:#eaf5ff;padding:9%;
+}
+.scene-hall-content{
+  width:100%;max-width:580px;max-height:94%;overflow-y:auto;text-align:center;
+  padding:7% 5%;border:1px solid #e3f7ff45;border-radius:7%;
+  background:linear-gradient(165deg,#426a9a33,#102447bb);box-shadow:0 12px 30px #0005
+}
+.scene-hall-icon{font-size:clamp(45px,14cqw,95px);color:#ffdb84;text-shadow:0 0 22px #7cb7ff}
+.scene-hall h2{font-size:clamp(28px,8cqw,64px);letter-spacing:.20em;
+  margin:0 0 2%;color:#e7faff;text-shadow:0 3px 18px #09122f}
+.scene-hall-sub{font-size:clamp(12px,2.6cqw,20px);letter-spacing:.1em;opacity:.85;margin:0 0 6%}
+.scene-hall-record{
+  border:1px solid #9cc8e444;border-radius:12px;padding:4%;
+  background:#0b234377;font-size:clamp(12px,3cqw,22px);
+  display:grid;gap:8px;margin-bottom:6%;text-align:left
+}
+.scene-hall-record>div{display:flex;justify-content:space-between;gap:8px}
+.scene-hall-record b{color:#ffe192}
+.scene-hall button{
+  display:block;width:100%;padding:3.1% 4%;margin:3% 0;
+  border-radius:999px;border:1px solid #9fcbea;
+  background:linear-gradient(#305283,#203765);color:#f3faff;
+  font-size:clamp(14px,3.4cqw,24px);font-weight:800;
+  text-shadow:0 1px 1px #09142c
+}
+.scene-hall button.menu-main{
+  color:#463119;text-shadow:none;border-color:#fff1ba;
+  background:linear-gradient(#ffe7a2,#d6aa57)
+}
+.scene-hall #hall-help-text{font-size:clamp(11px,2.5cqw,18px);
+  line-height:1.6;color:#cfe3f8;margin:2% 0;text-align:left}
+.scene-hall #hall-help-text[hidden]{display:none}
+.scene-hall-notice{font-size:clamp(9px,1.95cqw,15px);opacity:.65;margin:5% 0 0}
+
+/* The hidden attribute must outrank the full-screen hall rule. */
+body.mode-play .scene-hall[hidden],body.mode-lab .scene-hall[hidden]{display:none}

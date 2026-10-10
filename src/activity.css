@@ -1,0 +1,17 @@
+/* Purely illustrative, stand-alone research event; no paid reward. */
+.activity-layer{position:absolute;z-index:11;inset:0;pointer-events:none}
+.activity-layer[hidden]{display:none}
+#parachute-prop{position:absolute;top:11%;left:8%;width:14%;aspect-ratio:100/118;
+ padding:0;background:none;border:0;pointer-events:auto;
+ transform-origin:50% 20%;filter:drop-shadow(0 5px 7px #06183cb5);
+ animation:parachute-float 8s linear both;touch-action:manipulation}
+#parachute-prop svg{display:block;width:100%;height:100%;pointer-events:none}
+@keyframes parachute-float{
+  0%{transform:translate3d(-90%,0,0) rotate(-8deg);opacity:0}
+  8%{opacity:1}
+  23%{transform:translate3d(45%,35%,0) rotate(7deg)}
+  50%{transform:translate3d(260%,145%,0) rotate(-8deg)}
+  74%{transform:translate3d(390%,245%,0) rotate(5deg);opacity:1}
+  100%{transform:translate3d(520%,310%,0) rotate(-6deg);opacity:0}
+}
+@media(prefers-reduced-motion:reduce){#parachute-prop{animation:none;top:35%;left:45%}}

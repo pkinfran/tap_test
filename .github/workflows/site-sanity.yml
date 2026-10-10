@@ -1,0 +1,39 @@
+name: Validate public Classic H5 site
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-site:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check all shipped JS modules parse
+        run: |
+          set -euo pipefail
+          find src -type f -name '*.mjs' -print0 | xargs -0 -n 1 node --check
+      - name: Check relative file references
+        run: |
+          set -euo pipefail
+          test -f index.html
+          test -f src/ui.mjs
+          test -f src/style.css
+          test -f assets/aster-night.svg
+          python3 - <<'PY'
+          import pathlib, re
+          html = pathlib.Path("index.html").read_text()
+          paths = re.findall(r'(?:src|href)=["\'](\./[^"\'?#]+)', html)
+          missing = [p for p in paths if not pathlib.Path(p).is_file()]
+          if missing:
+              raise SystemExit("Missing resources: " + ", ".join(missing))
+          print("Static references verified:", len(paths))
+          PY
