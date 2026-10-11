@@ -76,9 +76,14 @@ try {
       const before=Number((await page.locator('#score-number').textContent()).replaceAll(',',''));
       await page.locator('[role=gridcell]').nth(group[0]).click();
       await page.waitForFunction(v=>Number(document.querySelector('#score-number').textContent.replaceAll(',',''))>v, before,{timeout:10000});
-      await page.waitForTimeout(1200);
+      // The HUD intentionally chases the underlying game score over several
+      // animation frames. Assert the settled score, not a transient 18/20.
+      const expected=5*group.length*group.length;
+      await page.waitForFunction(({from,expected})=>
+        Number(document.querySelector('#score-number').textContent.replaceAll(',',''))===from+expected,
+        {from:before,expected},{timeout:15000});
       const after=Number((await page.locator('#score-number').textContent()).replaceAll(',',''));
-      assert.equal(after-before, 5*group.length*group.length, 'Live gameplay scoring must follow 5*n*n');
+      assert.equal(after-before,expected,'Settled live gameplay score must follow 5*n*n');
       assert.ok(!missing.length,'Live assets must not 404: '+missing.join('; '));
       assert.ok(!exceptions.length,'No runtime exceptions: '+exceptions.join('; '));
       await page.screenshot({path:out+'/public-'+spec.name+'.png',fullPage:true});
