@@ -262,6 +262,9 @@ export function syntheticBoard({seed=1,stage=1,overScore=0,revive=false,tierOver
     // single mean would once again remove exciting and unusually hard tails.
     // Strategy reference is sample-based and deliberately softly weighted.
     let cost=Infinity;
+    // Prefer measured distributional opening shape over aggressive tail
+    // fitting: I-tier original-p90 gate caught regression with 10/0.66.
+    // Preserve the last original-distribution-CI verified weighting.
     for(const entry of available.slice(0,8)){
       const play=largestFirstOutcome(entry.generated.board);
       const score=entry.structureCost+
