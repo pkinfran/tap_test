@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="1280" viewBox="0 0 720 1280" aria-hidden="true">
+<defs>
+ <linearGradient id="stone" x1="0" y1="0" x2=".65" y2="1"><stop stop-color="#35365f"/><stop offset=".6" stop-color="#24294f"/><stop offset="1" stop-color="#151b3d"/></linearGradient>
+ <linearGradient id="roof" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#4b4266"/><stop offset="1" stop-color="#272345"/></linearGradient>
+ <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#1a1840"/><stop offset="1" stop-color="#0a0c22"/></linearGradient>
+ <radialGradient id="window"><stop stop-color="#fff0be" stop-opacity=".95"/><stop offset=".65" stop-color="#f1b876" stop-opacity=".55"/><stop offset="1" stop-color="#f1a36b" stop-opacity="0"/></radialGradient>
+ <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#8c477e" stop-opacity="0"/><stop offset=".43" stop-color="#724d8f" stop-opacity=".31"/><stop offset="1" stop-color="#180e3e" stop-opacity=".35"/></linearGradient>
+</defs>
+<!-- Independent moonlit riverside town vector: geometry generated from
+ simple architecture, not source APK art or copied/composited screenshots. -->
+<path d="M0 1020Q170 996 360 1033T720 1014V1280H0Z" fill="url(#haze)" opacity=".8"/>
+<path d="M0 1151Q57 1130 121 1143T252 1139Q343 1116 410 1144T566 1139T720 1149V1280H0Z" fill="#392f5a" opacity=".43"/>
+<g opacity=".88">
+ <path d="M-12 1202V1139L64 1080L143 1139V1242H-12Z" fill="url(#stone)"/>
+ <path d="M-16 1141L63 1074L148 1141L128 1141L63 1097L4 1141Z" fill="url(#roof)" stroke="#625177" stroke-width="2"/>
+ <path d="M43 1079V1050H78V1080Z" fill="#2b294d"/><path d="M51 1050V1035H69V1050" fill="#443754"/>
+ <path d="M158 1245V1140H180V1121L198 1094L220 1121V1140H253V1245Z" fill="url(#stone)"/>
+ <path d="M155 1140L199 1090L258 1140Z" fill="url(#roof)"/><path d="M199 1090V1070" stroke="#887492" stroke-width="3"/>
+ <path d="M269 1260V1130H302V1096H334V1066H357V1096H383V1130H409V1260Z" fill="url(#stone)"/>
+ <path d="M283 1129L344 1051L395 1129Z" fill="url(#roof)" stroke="#635579" stroke-width="2"/>
+ <path d="M337 1050L344 1018L351 1050" fill="#544369"/><circle cx="344" cy="1034" r="4" fill="#c5b0c6"/>
+ <path d="M417 1247V1174H448V1141H478V1109H499V1141H529V1174H551V1247Z" fill="url(#stone)"/>
+ <path d="M451 1143L488 1100L529 1143Z" fill="url(#roof)"/>
+ <path d="M545 1260V1139H564V1098H584V1081H616V1098H637V1139H672V1260Z" fill="url(#stone)"/>
+ <path d="M557 1101L600 1047L647 1101Z" fill="url(#roof)" stroke="#69577d" stroke-width="2"/>
+ <path d="M595 1050V1029H606V1050" fill="#443e65"/>
+ <path d="M671 1260V1158L698 1122L731 1158V1260Z" fill="url(#stone)"/>
+ <path d="M666 1158L699 1119L738 1158Z" fill="url(#roof)"/>
+</g>
+<g fill="none" stroke="#a795ad" stroke-opacity=".28" stroke-width="1.8">
+ <path d="M20 1162H125M283 1152H398M563 1162H667"/>
+ <path d="M54 1127H98M188 1165H237M573 1114H627"/>
+</g>
+<g fill="none" stroke="#efd29a" stroke-width="2.1" stroke-linecap="round" opacity=".45">
+ <circle cx="600" cy="1116" r="14"/><path d="M600 1106V1116L606 1121"/>
+</g>
+<g><path d="M17 1162V1155a6 6 0 0 1 12 0v7Z" fill="#dfa67e" opacity="0.41"/>
+<ellipse cx="23" cy="1158" rx="11" ry="12" fill="url(#window)" opacity="0.08"/>
+<path d="M77 1162V1155a6 6 0 0 1 12 0v7Z" fill="#8ea9bd" opacity="0.39"/>
+<ellipse cx="83" cy="1158" rx="11" ry="12" fill="url(#window)" opacity="0.08"/>
+<path d="M107 1162V1155a6 6 0 0 1 12 0v7Z" fill="#dfa67e" opacity="0.58"/>
+<ellipse cx="113" cy="1158" rx="11" ry="12" fill="url(#window)" opacity="0.12"/>
+<path d="M17 1193V1186a6 6 0 0 1 12 0v7Z" fill="#8ea9bd" opacity="0.37"/>
+<path d="M47 1193V1186a6 6 0 0 1 12 0v7Z" fill="#dfa67e" opacity="0.56"/>
+<ellipse cx="53" cy="1189" rx="11" ry="12" fill="url(#window)" opacity="0.11"/>
+<path d="M107 1193V1186a6 6 0 0 1 12 0v7Z" fill="#8ea9bd" opacity="0.54"/>
+<ellipse cx="113" cy="1189" rx="11" ry="12" fill="url(#window)" opacity="0.11"/>
+<path d="M17 1224V1217a6 6 0 0 1 12 0v7Z" fill="#e8bd88" opacity="0.33"/>
+<path d="M47 1224V1217a6 6 0 0 1 12 0v7Z" fill="#8ea9bd" opacity="0.52"/>
+<ellipse cx="53" cy="1220" rx="11" ry="12" fill="url(#window)" opacity="0.10"/>
+<path d="M77 1224V1217a6 6 0 0 1 12 0v7Z" fill="#dfa67e" opacity="0.31"/>
+<path d="M107 1224V1217a6 6 0 0 1 12 0v7Z" fill="#e8bd88" opacity="0.5"/>
+<ellipse cx="113" cy="1220" rx="11" ry="12" fill="url(#window)" opacity="0.10"/>
+<path d="M213 1172V1165a6 6 0 0 1 12 0v7Z" fill="#e8bd88" opacity="0.48"/>
+<ellipse cx="219" cy="1168" rx="11" ry="12" fill="url(#window)" opacity="0.10"/>
+<path d="M178 1202V1195a6 6 0 0 1 12 0v7Z" fill="#e8bd88" opacity="0.27"/>
+<path d="M213 1202V1195a6 6 0 0 1 12 0v7Z" fill="#8ea9bd" opacity="0.46"/>
+<ellipse cx="219" cy="1198" rx="11" ry="12" fill="url(#window)" opacity="0.09"/>
+<path d="M178 1232V1225a6 6 0 0 1 12 0v7Z" fill="#8ea9bd" opacity="0.25"/>
+<path d="M213 1232V1225a6 6 0 0 1 12 0v7Z" fill="#dfa67e" opacity="0.44"/>
+<ellipse cx="219" cy="1228" rx="11" ry="12" fill="url(#window)" opacity="0.09"/>
+<path d="M325 1167V1160a6 6 0 0 1 12 0v7Z" fill="#e8bd88" opacity="0.42"/>
+<ellipse cx="331" cy="1163" rx="11" ry="12" fill="url(#window)" opacity="0.08"/>
+<path d="M358 1167V1160a6 6 0 0 1 12 0v7Z" fill="#8ea9bd" opacity="0.61"/>
+<ellipse cx="364" cy="1163" rx="11" ry="12" fill="url(#window)" opacity="0.12"/>
+<path d="M292 1197V1190a6 6 0 0 1 12 0v7Z" fill="#dfa67e" opacity="0.4"/>
+<ellipse cx="298" cy="1193" rx="11" ry="12" fill="url(#window)" opacity="0.08"/>
+<path d="M325 1197V1190a6 6 0 0 1 12 0v7Z" fill="#e8bd88" opacity="0.59"/>
+<ellipse cx="331" cy="1193" rx="11" ry="12" fill="url(#window)" opacity="0.12"/>
+<path d="M292 1227V1220a6 6 0 0 1 12 0v7Z" fill="#dfa67e" opacity="0.57"/>
+<ellipse cx="298" cy="1223" rx="11" ry="12" fill="url(#window)" opacity="0.11"/>
+<path d="M325 1227V1220a6 6 0 0 1 12 0v7Z" fill="#e8bd88" opacity="0.36"/>
+<path d="M358 1227V1220a6 6 0 0 1 12 0v7Z" fill="#8ea9bd" opacity="0.55"/>
+<ellipse cx="364" cy="1223" rx="11" ry="12" fill="url(#window)" opacity="0.11"/>
+<path d="M442 1183V1176a6 6 0 0 1 12 0v7Z" fill="#dfa67e" opacity="0.34"/>
+<path d="M471 1183V1176a6 6 0 0 1 12 0v7Z" fill="#e8bd88" opacity="0.53"/>
+<ellipse cx="477" cy="1179" rx="11" ry="12" fill="url(#window)" opacity="0.11"/>
+<path d="M442 1212V1205a6 6 0 0 1 12 0v7Z" fill="#dfa67e" opacity="0.51"/>
+<ellipse cx="448" cy="1208" rx="11" ry="12" fill="url(#window)" opacity="0.10"/>
+<path d="M471 1212V1205a6 6 0 0 1 12 0v7Z" fill="#e8bd88" opacity="0.3"/>
+<path d="M500 1212V1205a6 6 0 0 1 12 0v7Z" fill="#8ea9bd" opacity="0.49"/>
+<ellipse cx="506" cy="1208" rx="11" ry="12" fill="url(#window)" opacity="0.10"/>
+<path d="M563 1177V1170a6 6 0 0 1 12 0v7Z" fill="#dfa67e" opacity="0.28"/>
+<path d="M595 1177V1170a6 6 0 0 1 12 0v7Z" fill="#e8bd88" opacity="0.47"/>
+<ellipse cx="601" cy="1173" rx="11" ry="12" fill="url(#window)" opacity="0.09"/>
+<path d="M563 1205V1198a6 6 0 0 1 12 0v7Z" fill="#dfa67e" opacity="0.45"/>
+<ellipse cx="569" cy="1201" rx="11" ry="12" fill="url(#window)" opacity="0.09"/>
+<path d="M595 1205V1198a6 6 0 0 1 12 0v7Z" fill="#e8bd88" opacity="0.24"/>
+<path d="M627 1205V1198a6 6 0 0 1 12 0v7Z" fill="#8ea9bd" opacity="0.43"/>
+<ellipse cx="633" cy="1201" rx="11" ry="12" fill="url(#window)" opacity="0.09"/>
+<path d="M563 1233V1226a6 6 0 0 1 12 0v7Z" fill="#dfa67e" opacity="0.22"/>
+<path d="M627 1233V1226a6 6 0 0 1 12 0v7Z" fill="#8ea9bd" opacity="0.6"/>
+<ellipse cx="633" cy="1229" rx="11" ry="12" fill="url(#window)" opacity="0.12"/></g>
+<path d="M0 1224Q95 1207 176 1221T372 1218T540 1219T720 1211L720 1280H0Z" fill="url(#hill)" opacity=".91"/>
+<path d="M0 1241Q150 1225 301 1242T592 1236T720 1231" fill="none" stroke="#49305c" stroke-opacity=".44" stroke-width="7"/>
+<g stroke="#423755" fill="none" stroke-width="2.6" opacity=".75">
+ <path d="M0 1213H720"/><path d="M16 1213V1233M56 1213V1231M96 1213V1232M136 1213V1232M176 1213V1233M216 1213V1233M256 1213V1231M296 1213V1231M336 1213V1232M376 1213V1233M416 1213V1233M456 1213V1234M496 1213V1234M536 1213V1233M576 1213V1233M616 1213V1233M656 1213V1233M696 1213V1233"/>
+</g>
+</svg>

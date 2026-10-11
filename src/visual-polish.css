@@ -11,7 +11,11 @@ body.mode-play .game-pane.play-scene{
   background-image:
     linear-gradient(180deg,rgba(2,8,31,.74) 0%,rgba(4,12,39,.51) 31%,
       rgba(13,11,39,.17) 58%,rgba(22,8,41,.34) 100%),
+    url('../assets/city-lights.svg'),
     url('../assets/aster-night.svg');
+  background-position:center,center,center;
+  background-repeat:no-repeat,no-repeat,no-repeat;
+  background-size:100% 100%,100% 100%,100% 100%;
   background-color:#050d2c;
 }
 body.mode-play .game-pane.play-scene:before{
