@@ -279,16 +279,31 @@ function renderBoard(){
   }
   $('board').replaceChildren(frag);
 }
-function beginStageEnter(result){
+function beginStageEnter(result,{revive=false}={}){
   if(!result?.ok){render();return;}
+  // The native current-Classic normal revive actually re-enters the same
+  // level and rolls back its cumulative score to level-entry value.
+  // The H5 MUST remove its prior defeat layer and reset the displayed HUD
+  // *immediately*, rather than leaving a phantom old score chasing down
+  // while the regenerated board is entering.
   const token=++generation;
-  locked=true;toolMode=null;clearMask.clear();visual=null;
+  locked=true;toolMode=null;paintCell=null;clearMask.clear();visual=null;
+  if(revive){
+    if(hudFrame)cancelAnimationFrame(hudFrame);
+    hudFrame=0;lastHudFrameAt=null;
+    visualScore=game.score;visualTargetScore=game.score;
+    $('float-score').classList.remove('show');
+    hideCheer();
+  }
   const boardWrap=document.querySelector('.board-wrap');
   const layer=$('stage-entry');
   $('stage-entry-title').textContent='第 '+game.stage+' 关';
   $('stage-entry-target').textContent='目标 '+formats(target(game.stage))+' 分';
   boardWrap.classList.add('entering');layer.hidden=false;
-  record('stage-enter-3s',{stage:game.stage,stageEnterMs:3000,source:'FGUI 72frames/24fps'});
+  record(revive?'revive-stage-enter-3s':'stage-enter-3s',{
+    stage:game.stage,stageEnterMs:3000,source:'FGUI 72frames/24fps',
+    independentApproximation:true,revive
+  });
   render();
   setTimeout(()=>{
     if(token!==generation)return;
@@ -299,7 +314,9 @@ function beginStageEnter(result){
     if(token!==generation)return;
     boardWrap.classList.remove('dropping');locked=false;
     record('stage-board-settled',{stage:game.stage,entryMs:3000,approxBoardMs:1450});
-    message('已进入第 '+game.stage+' 关。原 APK 新盘落下约1.2–1.3秒，此处仅是时间参考的近似动画。');
+    message(revive
+      ?'普通复活已完成：本关分数已回退，独立新棋盘已落定。'
+      :'已进入第 '+game.stage+' 关。原 APK 新盘落下约1.2–1.3秒，此处仅是时间参考的近似动画。');
     render();
   },4450);
 }
@@ -415,11 +432,25 @@ function renderOverlay(){
       overlay.append(close);
     }
     action(consumer?'普通复活（本地练习）':'普通复活（测试）',()=>{
-      const result=game.revive();saveSession();record('normal-revive',result);
-      message('普通复活：本关得分回退至入场值，换一张独立生成的较易棋盘。');render();
+      const result=game.revive();
+      if(!result.ok){message('当前状态不允许复活。');render();return;}
+      // Persist once BEFORE visual transition. Browser/background/crash cannot
+      // spend the same revive twice or restore an obsolete failure layer.
+      saveSession();record('normal-revive',result);
+      message('普通复活：本关累计得分回退至入场值，正在加载一张新的独立棋盘。');
+      if(consumer)beginStageEnter(result,{revive:true});
+      else {
+        if(hudFrame)cancelAnimationFrame(hudFrame);
+        hudFrame=0;lastHudFrameAt=null;
+        visualScore=game.score;visualTargetScore=game.score;
+        render();
+      }
     });
     if(!consumer)action('超级复活（测试）',()=>{
-      const result=game.revive(true);saveSession();record('super-revive',result);
+      const result=game.revive(true);
+      if(!result.ok){message('当前状态不允许超级复活。');render();return;}
+      saveSession();record('super-revive',result);
+      visualScore=game.score;visualTargetScore=game.score;
       message('超级复活保留本关已得分；原 APK 收费与广告条件尚未证实。');render();
     });
     action(consumer?'放弃本局':'结束本局',()=>{
