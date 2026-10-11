@@ -1,9 +1,11 @@
 name: Smoke-test deployed Classic H5 on GitHub Pages
 
+# Pages' built-in workflow does not consistently emit a downstream workflow_run.
+# Trigger on every main update; the test script waits for publish-manifest.json
+# to match the committed SHA, so it never mistakes an older deployment for new.
 on:
-  workflow_run:
-    workflows: ["pages build and deployment"]
-    types: [completed]
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -11,10 +13,6 @@ permissions:
 
 jobs:
   deployed-smoke:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' &&
-       github.event.workflow_run.head_branch == 'main')
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:

@@ -1,0 +1,7 @@
+{
+  "source_repository": "pkinfran/popstar-recreation",
+  "source_sha": "ad96d5dec2e97922511c514eb3d06ec87b3f9a6a",
+  "release_channel": "classic-h5",
+  "release_description": "Last verified Classic H5 source snapshot. See private source CI run 38072773200.",
+  "cleanroom": true
+}

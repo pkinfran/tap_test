@@ -11,7 +11,7 @@
 
 ## GitHub Pages 实际部署状态
 
-GitHub Pages 已经启用，[2026-10-11 Pages 构建与部署](https://github.com/pkinfran/tap_test/actions/runs/38111098199) 任务 **SUCCESS**，GitHub 提供的正式地址为 https://pkinfran.github.io/tap_test/ 。下游线上真实 Chromium 桌面和 Pixel 7 浏览器测试详见 `.github/workflows/production-smoke.yml`，与仓库代码静态检查相互独立。
+GitHub Pages 已经启用，[2026-10-11 Pages 构建与部署](https://github.com/pkinfran/tap_test/actions/runs/38111098199) 任务 **SUCCESS**，GitHub 提供的正式地址为 https://pkinfran.github.io/tap_test/ 。每次主分支更新会启动真实 Chromium 桌面和 Pixel 7 浏览器测试，并校验线上部署清单，详见 `.github/workflows/production-smoke.yml`，与仓库代码静态检查相互独立。
 
 ## 开发源自动同步
 

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {chromium, devices} from 'playwright';
-import {mkdir} from 'node:fs/promises';
+import {mkdir,readFile} from 'node:fs/promises';
 
 const BASE = process.env.CLASSIC_PUBLIC_URL || 'https://pkinfran.github.io/tap_test/';
 const out = 'test-artifacts';
@@ -24,6 +24,29 @@ function firstConnectedGroup(colors) {
   }
   return null;
 }
+
+// GitHub Pages deployment may lag the repository push. Do not verify a cached
+// older H5 version by accident: wait for its public source SHA manifest.
+const expected=JSON.parse(await readFile('publish-manifest.json','utf8'));
+let published=false,lastDetail='no response';
+for(let n=0;n<36;n++){
+  try {
+    const u=new URL('publish-manifest.json',BASE);
+    u.searchParams.set('check',String(Date.now()));
+    const response=await fetch(u,{cache:'no-store',signal:AbortSignal.timeout(12000)});
+    if(response.ok){
+      const current=await response.json();
+      if(current.source_sha===expected.source_sha){
+        console.log('LIVE_PAGES_RELEASE_CONFIRMED',current.source_sha,BASE);
+        published=true;break;
+      }
+      lastDetail='old source SHA '+current.source_sha;
+    }else lastDetail='manifest status '+response.status;
+  }catch(e){lastDetail=String(e)}
+  console.log('Waiting for live Pages release...',n+1,lastDetail);
+  await new Promise(resolve=>setTimeout(resolve,5000));
+}
+assert.ok(published,'GitHub Pages did not deploy matching publish-manifest.json: '+lastDetail);
 
 const browser=await chromium.launch({headless:true});
 let failures=0;
