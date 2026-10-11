@@ -265,10 +265,19 @@ export function syntheticBoard({seed=1,stage=1,overScore=0,revive=false,tierOver
     // Prefer measured distributional opening shape over aggressive tail
     // fitting: I-tier original-p90 gate caught regression with 10/0.66.
     // Preserve the last original-distribution-CI verified weighting.
-    for(const entry of available.slice(0,8)){
+    // The original A/B board libraries have a measurable low-remaining
+    // strategy tail (original A p10=4, B p10=7) that global-average fitting
+    // under-produces. Spend extra search effort ONLY when that original
+    // source percentile was sampled. Leave C-I (especially I's 43 records)
+    // unchanged, preserving the established opening-quantile hard gates.
+    const tailSeeking=(tier==='A'||tier==='B')&&
+      reference.remaining<=source.largestFirst.remaining.p10+1;
+    const finalists=tailSeeking?16:8;
+    const remainingWeight=tailSeeking?0.92:0.24;
+    for(const entry of available.slice(0,finalists)){
       const play=largestFirstOutcome(entry.generated.board);
       const score=entry.structureCost+
-        Math.abs(play.remaining-reference.remaining)*0.24+
+        Math.abs(play.remaining-reference.remaining)*remainingWeight+
         Math.abs(play.clearScore-reference.clearScore)*0.0013;
       if(score<cost){cost=score;selected=entry.generated;}
     }
