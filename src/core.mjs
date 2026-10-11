@@ -272,8 +272,8 @@ export function syntheticBoard({seed=1,stage=1,overScore=0,revive=false,tierOver
     // unchanged, preserving the established opening-quantile hard gates.
     const tailSeeking=(tier==='A'||tier==='B')&&
       reference.remaining<=source.largestFirst.remaining.p10+1;
-    const finalists=tailSeeking?16:8;
-    const remainingWeight=tailSeeking?0.92:0.24;
+    const finalists=tailSeeking?24:8;
+    const remainingWeight=tailSeeking?1.55:0.24;
     for(const entry of available.slice(0,finalists)){
       const play=largestFirstOutcome(entry.generated.board);
       const score=entry.structureCost+
