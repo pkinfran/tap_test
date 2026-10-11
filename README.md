@@ -9,14 +9,9 @@
 - 不上传原 APK、APK 逆向产物、原始棋盘记录、研究文档或测试工件；所有网页客户端代码按 Web 特性公开可见。
 - 游戏为非官方的原创 H5 研究复刻，非原 APK，不包含原作美术与音频素材。
 
-## 一次性启用 GitHub Pages
+## GitHub Pages 实际部署状态
 
-1. 打开 [本仓库 Settings → Pages](https://github.com/pkinfran/tap_test/settings/pages)。
-2. 在 **Build and deployment** 中选 **Deploy from a branch**。
-3. 选择 **main** 分支，目录 **/ (root)**，点击 **Save**。
-4. GitHub Pages 发布完成后访问 https://pkinfran.github.io/tap_test/ 。
-
-这是纯静态 ES Module 页面，资源使用相对路径，无需 Node 服务器、构建命令或 Vercel。发布后对 `main` 的文件更新将触发 Pages 再发布。
+GitHub Pages 已经启用，[2026-10-11 Pages 构建与部署](https://github.com/pkinfran/tap_test/actions/runs/38111098199) 任务 **SUCCESS**，GitHub 提供的正式地址为 https://pkinfran.github.io/tap_test/ 。下游线上真实 Chromium 桌面和 Pixel 7 浏览器测试详见 `.github/workflows/production-smoke.yml`，与仓库代码静态检查相互独立。
 
 ## 开发源自动同步
 
