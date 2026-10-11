@@ -1,7 +1,1 @@
-{
-  "source_repository": "pkinfran/popstar-recreation",
-  "source_sha": "e2cb273e0e96d10ac0a81d79b12af2f732b5e96a",
-  "source_validation_run": 38113107187,
-  "release_channel": "classic-h5",
-  "cleanroom": true
-}
+{"source_repository":"pkinfran/popstar-recreation","source_sha":"95fcc7a2345033ebb0ded9a0975dde1e6f851fbb","release_channel":"classic-h5","cleanroom":true}
