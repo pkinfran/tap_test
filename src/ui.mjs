@@ -248,7 +248,7 @@ function reset(){
   visualScore=game.score;visualTargetScore=game.score;if(hudFrame)cancelAnimationFrame(hudFrame);hudFrame=0;lastHudFrameAt=null;
   hideCheer();
   log=[];lastAction='新棋盘';record('new-board',{boardOrigin:game.boardOrigin,tier:game.tier});
-  message('原创新棋盘：已构造一条无需道具的全消路线；任意乱点不保证全消。');updateSessionLabels();saveSession();render();
+  message('原创随机棋盘：难度参考原 APK 各档统计，当前棋盘不保证全消。');updateSessionLabels();saveSession();render();
 }
 function selectedCells(){
   if(!game.selected)return new Set();
@@ -306,6 +306,7 @@ function beginStageEnter(result){
 function renderOverlay(){
   const overlay=$('overlay');
   overlay.replaceChildren();overlay.hidden=true;
+  overlay.removeAttribute('data-phase');
   if(locked)return;
   const phase=game.phase;
   if(pendingEndConfirm&&phase==='failure'){
@@ -325,9 +326,23 @@ function renderOverlay(){
   }
   overlay.classList.remove('record-confirm');
   if(!['rescue','failure','pass','unsupported-stage','ended'].includes(phase))return;
-  overlay.hidden=false;
+  overlay.hidden=false;overlay.dataset.phase=phase;
   const icon=document.createElement('div');icon.className='overlay-ornament';
   icon.textContent=phase==='pass'?'✦':'✧';overlay.append(icon);
+  if(phase==='pass'){
+    // Independent award animation based on the source's five flying markers
+    // and ~.833s overall window; NEVER uses the APK's original art.
+    const constellation=document.createElement('div');
+    constellation.className='reward-constellation';
+    constellation.setAttribute('aria-hidden','true');
+    for(let i=0;i<5;i++){
+      const star=document.createElement('span');
+      star.className='reward-star';star.textContent='✦';
+      star.style.setProperty('--reward-index',String(i));
+      constellation.append(star);
+    }
+    overlay.append(constellation);
+  }
   const headline=document.createElement('h3');
   headline.textContent=phase==='pass'?'关卡完成':phase==='rescue'?'还有一次机会':phase==='ended'?'本局结束':'关卡未达标';
   overlay.append(headline);
@@ -442,7 +457,6 @@ function animateMove(result){
   locked=true;toolMode=null;visual=result.before;clearMask.clear();
   const physics=motionPlan(result.before,result.removed.map(p=>[p.row,p.col]));
   render(); // Keep the old board in place throughout the animation.
-  if(result.gained)floatScore(result.gained,result.removed);
   const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches||false;
   currentEffect=beginClearEffect($('board'),result,physics,{
     reducedMotion:reduced,
@@ -452,6 +466,8 @@ function animateMove(result){
       const perPiece=result.kind==='hammer'?5:5*(2*i+1);
       visualTargetScore=Math.min(game.score,visualTargetScore+perPiece);
       triggerChase();
+      if(i===result.removed.length-1&&result.gained)
+        floatScore(result.gained,result.removed);
       synthAudio.pop(result.removed.length,i);
     },
     onLand:()=>{if(token===generation)synthAudio.land();},

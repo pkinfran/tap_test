@@ -76,12 +76,24 @@ export function beginClearEffect(board,result,motion,{
     const colors={red:'#ff8bab',green:'#9fff80',blue:'#a3eaff',
       orange:'#ffe78a',violet:'#dbb7ff'};
     const colorName=['red','green','blue','orange','violet'][p.color]||'blue';
-    const amount=4;
+    const amount=removed.length>15?3:removed.length>9?5:8;
+    // Local additive impact ring only. No fullscreen/board overlay.
+    const ring=document.createElement('span');
+    ring.className='fx-impact';
+    ring.style.left=centerX+'px';ring.style.top=centerY+'px';
+    ring.style.setProperty('--impact-color',colors[colorName]);
+    layer.append(ring);
+    play(ring,[
+      {transform:'translate(-50%,-50%) scale(.18)',opacity:.1},
+      {transform:'translate(-50%,-50%) scale(.9)',opacity:.85,offset:.3},
+      {transform:'translate(-50%,-50%) scale(1.8)',opacity:0}
+    ],{duration:300,easing:'cubic-bezier(.12,.68,.3,1)'});
+    schedule(()=>ring.remove(),330);
     for(let i=0;i<amount;i++){
       const chip=document.createElement('span');
       chip.className='fx-shard';
-      const angle=(i*2.39996)+(p.row*1.1+p.col*.3);
-      const distance=rect.width*(.35+(i%3)*.15);
+      const angle=(i*Math.PI*2/amount)+(p.row*1.1+p.col*.3);
+      const distance=rect.width*(.34+(i%3)*.17);
       chip.style.left=centerX+'px';chip.style.top=centerY+'px';
       chip.style.backgroundColor=colors[colorName];
       layer.append(chip);
@@ -110,17 +122,41 @@ export function beginClearEffect(board,result,motion,{
     ],{duration:630,easing:'cubic-bezier(.16,.64,.28,1)'});
     schedule(()=>score.remove(),690);
   }
+  function flyGroupScore(rect,n){
+    if(reducedMotion||!rect||n<2)return;
+    const target=document.getElementById('score-number')?.getBoundingClientRect();
+    if(!target)return;
+    const x=rect.left-boardRect.left+rect.width/2;
+    const y=rect.top-boardRect.top+rect.height/2;
+    const dx=target.left+target.width/2-(boardRect.left+x);
+    const dy=target.top+target.height/2-(boardRect.top+y);
+    const token=document.createElement('span');
+    token.className='fx-flying-score';
+    token.textContent='+'+(5*n*n);
+    token.style.left=x+'px';token.style.top=y+'px';
+    layer.append(token);
+    play(token,[
+      {transform:'translate(-50%,-50%) scale(.6)',opacity:0},
+      {transform:'translate(-50%,-90%) scale(1.2)',opacity:1,offset:.18},
+      {transform:'translate(calc(-50% + '+(dx*.49).toFixed(1)+'px),calc(-50% + '+(dy*.43-12).toFixed(1)+'px)) scale(.9)',opacity:1,offset:.53},
+      {transform:'translate(calc(-50% + '+dx.toFixed(1)+'px),calc(-50% + '+dy.toFixed(1)+'px)) scale(.22)',opacity:0}
+    ],{duration:650,easing:'cubic-bezier(.19,.58,.28,1)'});
+    schedule(()=>token.remove(),700);
+  }
   for(const p of removed){
     const entry=oldPositions.get(p.row*10+p.col);
     if(!entry)continue;
     schedule(()=>{
+      const pieceIndex=removed.indexOf(p);
       onPop(p);
-      tinyPoints(p,removed.indexOf(p),entry.rect);
+      tinyPoints(p,pieceIndex,entry.rect);
+      if(pieceIndex===removed.length-1&&result.kind==='clear')
+        flyGroupScore(entry.rect,removed.length);
       if(!reducedMotion){
         play(entry.ghost,[
           {transform:'translate3d(0,0,0) scale(1)',opacity:1,offset:0},
-          {transform:'translate3d(0,-2px,0) scale(1.12)',opacity:1,offset:.24},
-          {transform:'translate3d(0,-5px,0) scale(.25) rotate(28deg)',opacity:0,offset:1}
+          {transform:'translate3d(0,-2px,0) scale(1.23) rotate(-3deg)',opacity:1,offset:.24},
+          {transform:'translate3d(0,-5px,0) scale(.16) rotate(34deg)',opacity:0,offset:1}
         ],{duration:timing.burstMs,easing:'cubic-bezier(.23,.7,.28,1)'});
         shardBurst(p,entry.rect);
       }else{

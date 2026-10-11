@@ -59,3 +59,24 @@ body.mode-play .board .fx-layer .fx-point{font-size:clamp(10px,2.65cqw,18px)}
 @keyframes hint-ring{0%,100%{filter:brightness(1)}
   50%{filter:brightness(1.19)}}
 @media(prefers-reduced-motion:reduce){#board > .cell.hint{animation:none}}
+
+/* Short, local light shockwaves; never a screen-wide clearing mask. */
+.board .fx-layer .fx-impact{
+  position:absolute;z-index:4;pointer-events:none;width:9%;height:9%;
+  border-radius:50%;
+  background:radial-gradient(circle,#fffcf2 0 10%,var(--impact-color) 26%,transparent 75%);
+  box-shadow:0 0 9px 4px var(--impact-color);opacity:0;
+  mix-blend-mode:screen;will-change:transform,opacity;
+}
+.board .fx-layer .fx-flying-score{
+  position:absolute;z-index:9;pointer-events:none;white-space:nowrap;
+  color:#fff0ac;text-shadow:0 1px 3px #1c1137,0 0 10px #fac961c8;
+  font-weight:1000;font-size:clamp(14px,3vw,32px);
+  will-change:transform,opacity;
+}
+body.mode-play .board .fx-layer .fx-flying-score{
+  font-size:clamp(15px,5cqw,32px);
+}
+@media(prefers-reduced-motion:reduce){
+  .board .fx-layer .fx-impact,.board .fx-layer .fx-flying-score{display:none}
+}
