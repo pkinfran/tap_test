@@ -307,10 +307,17 @@ function renderOverlay(){
   const overlay=$('overlay');
   overlay.replaceChildren();overlay.hidden=true;
   overlay.removeAttribute('data-phase');
+  overlay.removeAttribute('aria-label');
+  overlay.removeAttribute('aria-modal');
+  overlay.removeAttribute('role');
   if(locked)return;
   const phase=game.phase;
   if(pendingEndConfirm&&phase==='failure'){
     overlay.hidden=false;
+    overlay.dataset.phase='failure';
+    overlay.setAttribute('role','dialog');
+    overlay.setAttribute('aria-modal','true');
+    overlay.setAttribute('aria-label','确认是否退出 Classic 游戏');
     overlay.classList.add('record-confirm');
     const heading=document.createElement('h3');heading.textContent='确定结束本局？';
     const para=document.createElement('p');
@@ -327,6 +334,10 @@ function renderOverlay(){
   overlay.classList.remove('record-confirm');
   if(!['rescue','failure','pass','unsupported-stage','ended'].includes(phase))return;
   overlay.hidden=false;overlay.dataset.phase=phase;
+  overlay.setAttribute('role','dialog');
+  overlay.setAttribute('aria-modal','true');
+  overlay.setAttribute('aria-label',phase==='pass'?'Classic 关卡完成':
+    phase==='rescue'?'Classic 救场选择':phase==='failure'?'Classic 闯关失败':'Classic 本局结果');
   const icon=document.createElement('div');icon.className='overlay-ornament';
   icon.textContent=phase==='pass'?'✦':'✧';overlay.append(icon);
   if(phase==='pass'){
@@ -384,6 +395,21 @@ function renderOverlay(){
     });
     action('放弃救场',()=>{game.rejectRescue();saveSession();record('reject-rescue');render();});
   }else if(phase==='failure'){
+    if(consumer){
+      // Original stage-7 screenshot has a top-right X. Its actual post-close
+      // behavior is not yet verified, so this clean-room control NEVER silently
+      // abandons/charges the player: it asks for confirmation instead.
+      const close=document.createElement('button');
+      close.type='button';close.className='result-close';
+      close.setAttribute('aria-label','关闭失败弹窗并确认是否退出');
+      close.textContent='×';
+      close.addEventListener('click',()=>{
+        pendingEndConfirm=true;
+        record('ask-abandon-confirmation',{source:'original-top-right-close-affordance-not-verified-flow'});
+        render();
+      });
+      overlay.append(close);
+    }
     action(consumer?'普通复活（本地练习）':'普通复活（测试）',()=>{
       const result=game.revive();saveSession();record('normal-revive',result);
       message('普通复活：本关得分回退至入场值，换一张独立生成的较易棋盘。');render();
@@ -534,8 +560,15 @@ function openPalette(row,col){
   if(locked)return;
   paintCell=[row,col];
   const box=$('overlay');box.hidden=false;box.replaceChildren();
+  box.setAttribute('role','dialog');
+  box.setAttribute('aria-modal','true');
+  box.setAttribute('aria-label','选择蜡笔星星颜色');
   const h=document.createElement('h3');h.textContent='给这颗星星换色';box.append(h);
-  const p=document.createElement('p');p.textContent='选择目标颜色（工作台调试库存 ×'+game.props.crayon+'）';box.append(p);
+  const p=document.createElement('p');
+  p.textContent=document.body.classList.contains('mode-play')
+    ?'使用本地练习道具改变星星颜色，剩余 '+game.props.crayon+' 次'
+    :'选择目标颜色（工作台调试库存 ×'+game.props.crayon+'）';
+  box.append(p);
   const actions=document.createElement('div');actions.className='overlay-actions';
   COLORS.forEach((color,id)=>{
     const b=document.createElement('button');b.textContent=['红','绿','蓝','橙','紫'][id]+' ★';
@@ -636,8 +669,12 @@ $('scene-toggle-audio').addEventListener('click',()=>{
 document.addEventListener('keydown',event=>{
   if(event.key!=='Escape'||!document.body.classList.contains('mode-play'))return;
   if(!$('scene-hall').hidden){closeHall();return;}
-  if(!$('scene-menu').hidden)setMenu(false);
-  else setMenu(true);
+  if(!$('scene-menu').hidden){setMenu(false);return;}
+  if(paintCell!==null){
+    paintCell=null;toolMode=null;render();return;
+  }
+  if(pendingEndConfirm){pendingEndConfirm=false;render();return;}
+  setMenu(true);
 });
 
 $('board').addEventListener('click',onBoardClick);

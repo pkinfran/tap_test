@@ -151,6 +151,52 @@ body.mode-play .game-overlay:not([hidden]){
 body.mode-play .game-overlay[data-phase=pass]{
   background:radial-gradient(ellipse 120% 98% at 50% 43%,#345184ef,#101b40f5);
 }
+/* Verified original Android stage-7 failure geometry (artifact 11694418595):
+   native prompt bounds ~[39,195]..[681,891] in the 720x1280 viewport.
+   The consumer H5 uses a DISTINCT original-art dialog but follows the
+   spatial behavior: upper board covered, lowest rows visible below panel.
+   The board remains noninteractive until a settlement choice resolves. */
+body.mode-play .game-overlay[data-phase=failure],
+body.mode-play .game-overlay[data-phase=rescue]{
+  inset:auto 2% auto 2%;
+  top:-33%;
+  height:102%;
+  min-height:0;
+  width:auto;
+  padding:7% 5% 5%;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  border-radius:9% 9% 6% 6%;
+  background:
+    radial-gradient(ellipse at 50% 25%,#44639fdd,#162c5deb 76%),
+    #132650;
+  border:2px solid #8daff0a8;
+  box-shadow:0 10px 23px #020a27b5,inset 0 2px 3px #e5f3ff47;
+}
+body.mode-play .game-overlay[data-phase=failure] .overlay-ornament,
+body.mode-play .game-overlay[data-phase=rescue] .overlay-ornament{
+  flex-shrink:0;
+  color:#ffdf98;
+  animation:polish-defeat-gentle 1.65s ease-in-out infinite alternate;
+}
+@keyframes polish-defeat-gentle{
+  from{transform:translateY(2px) rotate(-4deg)}
+  to{transform:translateY(-4px) rotate(4deg)}
+}
+body.mode-play .game-overlay[data-phase=failure] .overlay-actions,
+body.mode-play .game-overlay[data-phase=rescue] .overlay-actions{
+  margin-top:1%;
+}
+body.mode-play .game-overlay[data-phase=failure] .overlay-actions button:first-child,
+body.mode-play .game-overlay[data-phase=rescue] .overlay-actions button:first-child{
+  background:linear-gradient(150deg,#8be77a,#30964e);
+  color:#133825;border-color:#c1ffa5;
+  box-shadow:inset 0 1px 0 #fff9,0 4px 10px #020c2380;
+}
+@media(prefers-reduced-motion:reduce){
+  body.mode-play .game-overlay[data-phase=failure] .overlay-ornament,
+  body.mode-play .game-overlay[data-phase=rescue] .overlay-ornament{animation:none}
+}
 body.mode-play .game-overlay .overlay-ornament{
   color:#ffe698;
   font-size:clamp(32px,10cqw,70px);line-height:1;
@@ -261,3 +307,20 @@ body.mode-play .scene-back{
     0 2px 7px #020c28ab;
 }
 body.mode-play .scene-back:active:not(:disabled){transform:scale(.91)}
+
+/* Independently styled, accessible refusal/exit affordance: the original
+   APK failure screenshot has a close control high on the prompt, but its
+   action semantics remain unverified. Always show local confirmation here. */
+body.mode-play .game-overlay[data-phase=failure] .result-close{
+  position:absolute;right:4%;top:5%;z-index:2;
+  width:clamp(24px,6.2cqw,44px);height:clamp(24px,6.2cqw,44px);
+  display:grid;place-items:center;
+  padding:0;border:2px solid #b8daf9ad;border-radius:50%;
+  background:#19385f;color:#e7f3ff;
+  font-size:clamp(18px,5cqw,32px);font-weight:900;line-height:1;
+  box-shadow:inset 0 1px 0 #fff4,0 2px 5px #020b2480;
+  cursor:pointer;touch-action:manipulation;
+}
+body.mode-play .game-overlay[data-phase=failure] .result-close:focus-visible{
+  outline:3px solid #ffe48f;outline-offset:2px;
+}
