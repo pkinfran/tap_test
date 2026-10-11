@@ -219,3 +219,17 @@ body.mode-play .game-overlay .overlay-actions button:active{
     animation:none!important;
   }
 }
+
+/* Consumer mode keeps only playable actions; full test inventory and
+   super-revive research switches remain in the independent /?view=lab. */
+body.mode-play .game-overlay .practice-disclaimer{
+  max-width:88%;margin:0;
+  font-size:clamp(9px,2.15cqw,14px);
+  color:#afc9e8e8;text-align:center;line-height:1.45;
+}
+body.mode-play .game-overlay .overlay-actions{
+  max-width:90%;margin-top:clamp(7px,1.4cqw,12px);
+}
+body.mode-play .game-overlay .overlay-actions button{
+  padding:clamp(8px,2.5cqw,17px) clamp(14px,4cqw,25px);
+}

@@ -365,22 +365,50 @@ function renderOverlay(){
     overlay.append(stats);
   }
   const actions=document.createElement('div');actions.className='overlay-actions';
-  function action(label,handler){const b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',handler);actions.append(b);}
+  const consumer=document.body.classList.contains('mode-play');
+  function action(label,handler){
+    const b=document.createElement('button');b.type='button';b.textContent=label;
+    b.addEventListener('click',handler);actions.append(b);
+  }
   if(phase==='pass'){
-    action('下一关 →',()=>{const result=game.advance();saveSession();record('advance-stage',result);if(result.ok)beginStageEnter(result);else{message('目标信息未取得，无法进入下一关。');render();}});
-    action('重开演示',reset);
+    action('下一关 →',()=>{
+      const result=game.advance();saveSession();record('advance-stage',result);
+      if(result.ok)beginStageEnter(result);
+      else{message('目标信息未取得，无法进入下一关。');render();}
+    });
+    if(!consumer)action('重开演示',reset);
   }else if(phase==='rescue'){
-    action('刷新救场（测试）',()=>{const result=game.rescue();saveSession();record('rescue',result);message('救场后的棋盘为本工程生成，不代表原 APK 的付费道具流程已验证。');render();});
+    action(consumer?'试一次救场（本地练习）':'刷新救场（测试）',()=>{
+      const result=game.rescue();saveSession();record('rescue',result);
+      message('救场只在本浏览器使用原创随机盘，不代表原 APK 道具收费流程。');render();
+    });
     action('放弃救场',()=>{game.rejectRescue();saveSession();record('reject-rescue');render();});
   }else if(phase==='failure'){
-    action('普通复活（测试）',()=>{const result=game.revive();saveSession();record('normal-revive',result);message('普通复活：本关分数回退到入场分，重新生成较容易的棋盘。');render();});
-    action('超级复活（测试）',()=>{const result=game.revive(true);saveSession();record('super-revive',result);message('超级复活：保留失败前本关分数。原 APK 的收费与广告条件未验证。');render();});
-    action('结束本局',()=>{pendingEndConfirm=true;record('ask-abandon-confirmation',{source:'original-highscore-protection-is-conditional'});render();});
-    action('重新开始',reset);
+    action(consumer?'普通复活（本地练习）':'普通复活（测试）',()=>{
+      const result=game.revive();saveSession();record('normal-revive',result);
+      message('普通复活：本关得分回退至入场值，换一张独立生成的较易棋盘。');render();
+    });
+    if(!consumer)action('超级复活（测试）',()=>{
+      const result=game.revive(true);saveSession();record('super-revive',result);
+      message('超级复活保留本关已得分；原 APK 收费与广告条件尚未证实。');render();
+    });
+    action(consumer?'放弃本局':'结束本局',()=>{
+      pendingEndConfirm=true;
+      record('ask-abandon-confirmation',{source:'original-highscore-protection-is-conditional'});
+      render();
+    });
+    if(!consumer)action('重新开始',reset);
   }else if(phase==='ended'){
     action('再来一局',reset);
-    action('返回实验室',()=>switchScene('lab'));
-  }else action('重开演示',reset);
+    action(consumer?'返回游戏大厅':'返回实验室',
+      ()=>consumer?openHall():switchScene('lab'));
+  }else action(consumer?'再来一局':'重开演示',reset);
+  if(consumer&&['failure','rescue'].includes(phase)){
+    const explanation=document.createElement('p');
+    explanation.className='practice-disclaimer';
+    explanation.textContent='独立 H5 练习流程 · 不消耗金币、不播放广告';
+    overlay.append(explanation);
+  }
   overlay.append(actions);
 }
 function render(){
