@@ -64,7 +64,11 @@ export function clearChoreography(groupSize,plan,{reducedMotion=false}={}){
   const burstMs=235;
   const fallStartMs=Math.max(205,last-42);
   const settleMs=100;
-  const totalMs=Math.max(observed,last+burstMs+320,fallStartMs+520);
+  // The last destroyed tile launches its own local 650ms score flight.
+  // Do not discard the parent FX layer before that final HUD trajectory lands;
+  // this mattered at n20+ where the original short-group budget was too small.
+  // This is H5 authored feedback, not a claim of original n20 native timing.
+  const totalMs=Math.max(observed,last+burstMs+320,fallStartMs+520,last+650);
   const motionMs=totalMs-fallStartMs-settleMs;
   return {totalMs,delays,burstMs,fallStartMs,motionMs,settleMs,clearIntervalMs:70};
 }

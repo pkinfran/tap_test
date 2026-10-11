@@ -494,7 +494,11 @@ function animateMove(result){
       const perPiece=result.kind==='hammer'?5:5*(2*i+1);
       visualTargetScore=Math.min(game.score,visualTargetScore+perPiece);
       triggerChase();
-      if(i===result.removed.length-1&&result.gained)
+      // Consumer mode has the independent group score flying to the HUD.
+      // Do not overlay the same total twice; retain the lab's static callout
+      // and the single hammer's one-off feedback.
+      if(i===result.removed.length-1&&result.gained&&
+         (result.kind!=='clear'||!document.body.classList.contains('mode-play')))
         floatScore(result.gained,result.removed);
       synthAudio.pop(result.removed.length,i);
     },

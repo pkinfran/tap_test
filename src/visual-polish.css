@@ -233,3 +233,31 @@ body.mode-play .game-overlay .overlay-actions{
 body.mode-play .game-overlay .overlay-actions button{
   padding:clamp(8px,2.5cqw,17px) clamp(14px,4cqw,25px);
 }
+
+/* Contemporary 19.5:9 / 20:9 devices retain the exact measured 720×1280
+   gameplay geometry without black upper/lower gutters. Only quiet night sky
+   escapes the 16:9-compatible inner canvas, never a duplicated game HUD. */
+body.mode-play{
+  background:
+    radial-gradient(circle at 19% 8%,#accfff35 0 1px,transparent 2px),
+    radial-gradient(circle at 76% 22%,#c59af535 0 1px,transparent 2px),
+    radial-gradient(ellipse at 21% 91%,#553b7c44,transparent 48%),
+    linear-gradient(180deg,#060d2a 0%,#091633 40%,#131030 82%,#070a1f 100%);
+  background-color:#080d20;
+  background-attachment:fixed;
+}
+
+/* The original main Classic scene has one top-left back action and three
+   tools, NOT a prominent upper-right developer settings button. Workbench
+   remains reachable from the paused H5-only menu, but out of gameplay. */
+body.mode-play .scene-lab{display:none}
+body.mode-play .scene-back{
+  color:#fff7dc;
+  border:2px solid #64d4ff;
+  background:radial-gradient(circle at 31% 18%,#aceaff,#309de1 37%,
+    #1264ba 70%,#143867 98%);
+  text-shadow:0 2px 3px #09335f;
+  box-shadow:inset 0 2px 3px #f0ffffbb,inset 0 -4px 5px #062454,
+    0 2px 7px #020c28ab;
+}
+body.mode-play .scene-back:active:not(:disabled){transform:scale(.91)}
