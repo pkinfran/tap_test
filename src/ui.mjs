@@ -305,6 +305,8 @@ function beginStageEnter(result){
 }
 function renderOverlay(){
   const overlay=$('overlay');
+  const boardWrap=document.querySelector('.board-wrap');
+  boardWrap.classList.remove('settlement-open');
   overlay.replaceChildren();overlay.hidden=true;
   overlay.removeAttribute('data-phase');
   overlay.removeAttribute('aria-label');
@@ -314,6 +316,7 @@ function renderOverlay(){
   const phase=game.phase;
   if(pendingEndConfirm&&phase==='failure'){
     overlay.hidden=false;
+    boardWrap.classList.add('settlement-open');
     overlay.dataset.phase='failure';
     overlay.setAttribute('role','dialog');
     overlay.setAttribute('aria-modal','true');
@@ -333,7 +336,8 @@ function renderOverlay(){
   }
   overlay.classList.remove('record-confirm');
   if(!['rescue','failure','pass','unsupported-stage','ended'].includes(phase))return;
-  overlay.hidden=false;overlay.dataset.phase=phase;
+  overlay.hidden=false;boardWrap.classList.add('settlement-open');
+  overlay.dataset.phase=phase;
   overlay.setAttribute('role','dialog');
   overlay.setAttribute('aria-modal','true');
   overlay.setAttribute('aria-label',phase==='pass'?'Classic 关卡完成':
@@ -560,6 +564,7 @@ function openPalette(row,col){
   if(locked)return;
   paintCell=[row,col];
   const box=$('overlay');box.hidden=false;box.replaceChildren();
+  document.querySelector('.board-wrap').classList.add('settlement-open');
   box.setAttribute('role','dialog');
   box.setAttribute('aria-modal','true');
   box.setAttribute('aria-label','选择蜡笔星星颜色');

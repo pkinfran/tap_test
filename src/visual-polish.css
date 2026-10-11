@@ -324,3 +324,9 @@ body.mode-play .game-overlay[data-phase=failure] .result-close{
 body.mode-play .game-overlay[data-phase=failure] .result-close:focus-visible{
   outline:3px solid #ffe48f;outline-offset:2px;
 }
+
+/* The native defeat layer occludes tools around y330. The H5 board-wrap
+   usually sits under the y330 tool row (z-index:5); raise its stacking
+   context ONLY while a modal is visible, so the player never sees tool icons
+   or accidental clicks punching through the independent prompt. */
+body.mode-play .board-wrap.settlement-open{z-index:12}
