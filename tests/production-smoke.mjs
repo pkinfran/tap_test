@@ -86,7 +86,24 @@ try {
       assert.equal(after-before,expected,'Settled live gameplay score must follow 5*n*n');
       assert.ok(!missing.length,'Live assets must not 404: '+missing.join('; '));
       assert.ok(!exceptions.length,'No runtime exceptions: '+exceptions.join('; '));
-      await page.screenshot({path:out+'/public-'+spec.name+'.png',fullPage:true});
+      await page.screenshot({path:out+'/public-'+spec.name+'-lab.png',fullPage:true});
+
+      // Verify the user-facing default URL, not just the internal analysis lab.
+      const playable=await page.goto(BASE,{waitUntil:'networkidle',timeout:30000});
+      assert.equal(playable?.status(),200,'Public playable home must return HTTP 200');
+      await page.locator('body.mode-play').waitFor({timeout:15000});
+      assert.equal(await page.locator('[role=gridcell]').count(),100,'Playable home must render all 100 slots');
+      const playColors=await page.locator('[role=gridcell]').evaluateAll(cells=>cells.map(c=>c.dataset.color===undefined?null:c.dataset.color));
+      const playGroup=firstConnectedGroup(playColors);
+      assert.ok(playGroup,'Playable home must offer a legal connected group');
+      const scoreBefore=Number((await page.locator('#score-number').textContent()).replaceAll(',',''));
+      await page.locator('[role=gridcell]').nth(playGroup[0]).click();
+      await page.waitForFunction(({from,delta})=>
+        Number(document.querySelector('#score-number').textContent.replaceAll(',',''))===from+delta,
+        {from:scoreBefore,delta:5*playGroup.length*playGroup.length},{timeout:15000});
+      await page.screenshot({path:out+'/public-'+spec.name+'-game.png',fullPage:true});
+      assert.ok(!missing.length,'No deployed asset may return HTTP 4xx/5xx: '+missing.join('; '));
+      assert.ok(!exceptions.length,'No runtime exceptions across lab and play modes: '+exceptions.join('; '));
       console.log('LIVE_CLASSIC_PAGES_SMOKE_PASS',JSON.stringify({
         device:spec.name,url:page.url(),firstGroup:group.length,score:after,assets:'OK',scriptErrors:0
       }));
