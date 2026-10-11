@@ -334,3 +334,35 @@ body.mode-play .game-overlay[data-phase=failure] .result-close:focus-visible{
    context ONLY while a modal is visible, so the player never sees tool icons
    or accidental clicks punching through the independent prompt. */
 body.mode-play .board-wrap.settlement-open{z-index:12}
+
+/* Independent beveled 5-point enamel star with softly-rounded vector
+   geometry instead of hard polygon corners. A single reusable SVG alpha mask
+   avoids per-cell inline path duplication; both layers remain original CSS
+   colors, not source APK pixels. */
+body.mode-play .cell .star-emblem{
+  clip-path:none;
+  -webkit-mask-image:url('../assets/rounded-star.svg');
+  mask-image:url('../assets/rounded-star.svg');
+  -webkit-mask-position:center;
+  mask-position:center;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  -webkit-mask-size:100% 100%;
+  mask-size:100% 100%;
+  background:linear-gradient(149deg,#fffb,var(--tile-fill) 11%,var(--tile-deep) 92%);
+  filter:drop-shadow(0 2px 2px #070b3f9c);
+}
+body.mode-play .cell .star-emblem-inner{
+  clip-path:none;
+  inset:5% 5% 7%;
+  -webkit-mask-image:url('../assets/rounded-star.svg');
+  mask-image:url('../assets/rounded-star.svg');
+  -webkit-mask-position:center;
+  mask-position:center;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  -webkit-mask-size:100% 100%;
+  mask-size:100% 100%;
+  background:linear-gradient(155deg,var(--tile-shine),var(--tile-star) 46%,
+    var(--tile-fill) 75%,var(--tile-deep));
+}
