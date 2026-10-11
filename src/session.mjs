@@ -1,4 +1,5 @@
 import {ClassicGame,N,COLORS,countRemaining,target,groups,boardSignature,RECENT_BOARD_LIMIT} from './core.mjs';
+import {emptyVirtualDrawCounts,VIRTUAL_POOL_COUNTS} from './virtual-board-pool.mjs';
 
 export const SAVE_KEY='starry-classic-cleanroom-v1';
 const VERSION=1;
@@ -14,6 +15,7 @@ export function snapshot(game){
     stageEntryScore:game.stageEntryScore,previousTarget:game.previousTarget,
     tierOverride:game.tierOverride??null,tier:game.tier,board:game.board.map(row=>row.slice()),
     recentBoardSignatures:[...game.recentBoardSignatures],
+    virtualPoolDrawCounts:{...game.virtualPoolDrawCounts},
     turn:game.turn,phase:game.phase,revived:game.revived,rescued:game.rescued,
     twoTap:game.twoTap,debugSession:Boolean(game.debugSession),
     certifiedOpening:Boolean(game.certifiedOpening),certifiedBoards:Boolean(game.certifiedBoards),props:{...game.props},
@@ -37,6 +39,22 @@ export function restore(data){
     (!Array.isArray(data.recentBoardSignatures)||data.recentBoardSignatures.length>RECENT_BOARD_LIMIT||
      !data.recentBoardSignatures.every(s=>typeof s==='string'&&/^[0-4_]{100}$/.test(s))))
     throw new Error('Invalid recent board signatures');
+  // V1 saves predate virtual slot pools. Legacy progress remains usable:
+  // treat the visible current board as the first consumed slot in its tier.
+  const draws=emptyVirtualDrawCounts();
+  if(data.virtualPoolDrawCounts!==undefined){
+    const provided=data.virtualPoolDrawCounts;
+    const tiers=Object.keys(VIRTUAL_POOL_COUNTS);
+    if(!provided||Array.isArray(provided)||typeof provided!=='object'||
+       Object.keys(provided).length!==tiers.length||
+       !tiers.every(tier=>Object.hasOwn(provided,tier)&&
+         Number.isSafeInteger(provided[tier])&&provided[tier]>=0&&
+         provided[tier]<=1000000000))
+      throw new Error('Invalid synthetic virtual pool counters');
+    Object.assign(draws,provided);
+  }else if(Object.hasOwn(draws,data.tier)){
+    draws[data.tier]=1;
+  }
   // Board content is independent synthetic state, never the original APK data.
   const game=new ClassicGame({seed:data.seed,stage:data.stage,score:data.score,
     board:data.board,twoTap:Boolean(data.twoTap),tierOverride:data.tierOverride??null,
@@ -48,6 +66,7 @@ export function restore(data){
   game.rescued=Boolean(data.rescued);game.props={...data.props};
   game.recentBoardSignatures=data.recentBoardSignatures?.length?
     [...data.recentBoardSignatures]:[boardSignature(game.board)];
+  game.virtualPoolDrawCounts=draws;
   // Reconstructing with a forced board is only for restoring the exact
   // user state: it must not recategorize the generated A-I difficulty tier
   // as "debug" or make saved games falsely appear manually injected.

@@ -1,4 +1,6 @@
 import {certifiedOpening} from './solvable.mjs';
+import {ORIGINAL_LIBRARY_DISTRIBUTION,sourceQuantile} from './original-distribution.mjs';
+import {emptyVirtualDrawCounts,virtualPoolSlot,virtualPoolBoardSeed} from './virtual-board-pool.mjs';
 /**
  * Classic clean-room implementation core.
  *
@@ -171,23 +173,82 @@ export function boardSignature(board){
   return board.map(row=>row.map(v=>v===null?'_':String(v)).join('')).join('');
 }
 export const RECENT_BOARD_LIMIT=8;
-export function syntheticBoard({seed=1,stage=1,overScore=0,revive=false,tierOverride=null,avoidSignatures=[],guaranteed=false}={}){
-  const rng=rng32(seed),weights=weightsFor({stage,overScore,revive});
+
+/** This samples original tier *distributional reference quantiles* rather than
+ * forcing every candidate close to the tier's single mean. The marginals stay
+ * uniform in percentile rank while the 50-65% shared rank induces realistic
+ * positive max-group/potential and negative isolated correlation. Original
+ * per-board records are never bundled. More precise original joint-bin fitting
+ * remains a separate analysis gate. */
+function sampledOriginalTarget(tier,rng){
+  const src=ORIGINAL_LIBRARY_DISTRIBUTION[tier];
+  const rank=rng();
+  const isoRank=rng()<0.5?1-rank:rng();
+  const potentialRank=rng()<0.65?rank:rng();
+  const maxGroup=Math.round(sourceQuantile(src.opening.maxGroup,rank));
+  const isolated=Math.round(sourceQuantile(src.opening.isolated,isoRank));
+  const potential=Math.round(sourceQuantile(src.opening.potential,potentialRank));
+  const largestFirst={
+    clearScore:sourceQuantile(src.largestFirst.clearScore,potentialRank),
+    remaining:sourceQuantile(src.largestFirst.remaining,1-potentialRank)
+  };
+  return {maxGroup,isolated,potential,largestFirst,
+    sourcePercentiles:{rank:+rank.toFixed(5),isoRank:+isoRank.toFixed(5),
+      potentialRank:+potentialRank.toFixed(5)}};
+}
+
+export function syntheticBoard({seed=1,stage=1,overScore=0,revive=false,tierOverride=null,avoidSignatures=[],guaranteed=false,
+  virtualDrawCounts=null,virtualPoolSeed=seed}={}){
+  let rng=rng32(seed);
+  const weights=weightsFor({stage,overScore,revive});
   const tier=(tierOverride&&LIBRARY_PROFILES[tierOverride])?tierOverride:weightedPick(weights,rng),wanted=LIBRARY_PROFILES[tier];
+  // Clean-room virtual slot identity: original selectors avoid reused BoardLib
+  // entries until a tier is exhausted. The H5 reuses that rule but creates
+  // independent layouts keyed by synthetic slots (no APK records).
+  let selectedVirtualSlot=null;
+  if(!guaranteed&&virtualDrawCounts!==null){
+    const ordinal=virtualDrawCounts[tier]??0;
+    selectedVirtualSlot=virtualPoolSlot(tier,ordinal,virtualPoolSeed);
+    rng=rng32(virtualPoolBoardSeed(virtualPoolSeed,tier,selectedVirtualSlot.slot));
+  }
+  const source=ORIGINAL_LIBRARY_DISTRIBUTION[tier];
+  const drawn=guaranteed?null:sampledOriginalTarget(tier,rng);
+  const wantedOpening=drawn||{
+    maxGroup:wanted.maxGroup,isolated:100-wanted.removable,potential:wanted.potential};
+  // Adapt procedural raw candidates to the sampled source percentile. High
+  // max-group / low-isolation target needs more joins; the opposite needs
+  // more avoidance. This recovers source tails without shipping its records.
+  const pressure=guaranteed?0:Math.max(-3,Math.min(3,
+    0.7*(wantedOpening.maxGroup-source.opening.maxGroup.mean)/
+       Math.max(1,source.opening.maxGroup.stdev)
+    -0.45*(wantedOpening.isolated-source.opening.isolated.mean)/
+       Math.max(1,source.opening.isolated.stdev)));
+  const tuned={...wanted,join:Math.max(0,Math.min(0.5,wanted.join+0.023*pressure)),
+    avoid:Math.max(0,Math.min(0.7,wanted.avoid-0.029*pressure))};
   const recent=new Set(Array.isArray(avoidSignatures)?avoidSignatures.slice(-RECENT_BOARD_LIMIT):[]);
   const candidates=[],duplicateCandidates=[];
-  // Original's library selector is a weighted pool. We match independent
-  // generated boards on both initial geometry AND a complete fixed-strategy
-  // game outcome, without copying any original BoardLib record.
-  const candidateCount=guaranteed?12:24;
+  // Each opening draws an original-fitted distributional target; the
+  // independent 10x10 color records are generated from scratch.
+  const candidateCount=guaranteed?12:32;
   for(let i=0;i<candidateCount;i++){
     const generated=guaranteed?certifiedOpening(rng,tier):
-      {board:generateCandidate(rng,wanted),witness:null};
+      {board:generateCandidate(rng,tuned),witness:null};
     const stats=boardProfile(generated.board);
     if(!stats.maxGroup)continue;
-    const structureCost=2*Math.abs(stats.maxGroup-wanted.maxGroup)
-      +Math.abs(stats.removable-wanted.removable)*0.30
-      +Math.abs(stats.potential-wanted.potential)*0.007;
+    // The full original APK extraction also established coarse joint
+    // max-group × isolated histograms. Discourage impossible bin pairs that
+    // do not occur in any original record; still create independent layouts.
+    const jointKey='max'+Math.min(Math.floor(stats.maxGroup/3),6)+
+      ':iso'+Math.min(Math.floor(stats.isolated/10),9);
+    const jointSupport=(source.jointHistogram3x10[jointKey]||0)>0;
+    const boundaryPenalty=Math.max(0,source.opening.isolated.min-stats.isolated,
+      stats.isolated-source.opening.isolated.max,
+      source.opening.maxGroup.min-stats.maxGroup,
+      stats.maxGroup-source.opening.maxGroup.max)*0.7;
+    const structureCost=2*Math.abs(stats.maxGroup-wantedOpening.maxGroup)
+      +Math.abs(stats.isolated-wantedOpening.isolated)*0.27
+      +Math.abs(stats.potential-wantedOpening.potential)*0.008
+      +(tier==='I'?0:((jointSupport?0:8)+boundaryPenalty)); // I has only 43 source records: never fit tiny joint bins as hard support
     const entry={generated,structureCost};
     (recent.has(boardSignature(generated.board))?duplicateCandidates:candidates).push(entry);
   }
@@ -196,22 +257,24 @@ export function syntheticBoard({seed=1,stage=1,overScore=0,revive=false,tierOver
   available.sort((a,b)=>a.structureCost-b.structureCost);
   let selected=available[0].generated;
   if(!guaranteed){
-    const reference=LIBRARY_LARGEST_FIRST[tier];
-    // Bounded finalist rollout prevents a board from matching only initial
-    // group means but having a radically easier/harder leftover endgame.
-    // Keep a material penalty for deviating from the source's opening shape.
+    const reference=drawn.largestFirst;
+    // Fit the source full-play *range* too; fitting each outcome to the old
+    // single mean would once again remove exciting and unusually hard tails.
+    // Strategy reference is sample-based and deliberately softly weighted.
     let cost=Infinity;
     for(const entry of available.slice(0,8)){
       const play=largestFirstOutcome(entry.generated.board);
       const score=entry.structureCost+
-        Math.abs(play.remaining-reference.remaining)*0.45+
-        Math.abs(play.clearScore-reference.clearScore)*0.0015;
+        Math.abs(play.remaining-reference.remaining)*0.24+
+        Math.abs(play.clearScore-reference.clearScore)*0.0013;
       if(score<cost){cost=score;selected=entry.generated;}
     }
   }
   if(!guaranteed&&!groups(selected.board).length)selected.board[0][1]=selected.board[0][0];
   return {board:selected.board,tier,weights,seed,model:BOARD_MODEL,
     guaranteedOpening:guaranteed,witness:selected.witness,
+    virtualPoolSlot:selectedVirtualSlot,
+    distributionalTarget:drawn,
     profile:boardProfile(selected.board),targetProfile:{
       maxGroup:wanted.maxGroup,removable:wanted.removable,potential:wanted.potential
     }};
@@ -228,6 +291,7 @@ export class ClassicGame{
     this.debugSession=false; // only H5 developer force-end/pass marks a non-ranking session
     this.props={hammer:2,refresh:2,crayon:2};
     this.recentBoardSignatures=[];
+    this.virtualPoolDrawCounts=emptyVirtualDrawCounts();
     this._generate(board);
   }
   _generate(forcedBoard=null){
@@ -237,7 +301,10 @@ export class ClassicGame{
       const got=syntheticBoard({seed:this.seed+this.turn*2654435761,stage:this.stage,
         overScore:Math.max(0,this.score-this.previousTarget),revive:this.revived,
         tierOverride:this.tierOverride,avoidSignatures:this.recentBoardSignatures,
-        guaranteed:this.certifiedBoards});
+        guaranteed:this.certifiedBoards,
+        virtualDrawCounts:this.virtualPoolDrawCounts,virtualPoolSeed:this.seed});
+      if(got.virtualPoolSlot)
+        this.virtualPoolDrawCounts[got.tier]++;
       this.board=got.board;this.tier=got.tier;this.boardOrigin=got.model;
       this.openingWitness=got.witness;this.certifiedOpening=got.guaranteedOpening;
     }
